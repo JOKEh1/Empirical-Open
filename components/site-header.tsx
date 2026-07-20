@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Menu, X } from "lucide-react"
 
 const navLinks = [
@@ -71,12 +72,18 @@ export function SiteHeader() {
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
-            <button className="rounded-xs border border-white/30 px-4 py-2 text-sm font-medium transition-colors hover:border-white/60">
+            <Link
+              href="/login"
+              className="rounded-xs border border-white/30 px-4 py-2 text-sm font-medium transition-colors hover:border-white/60"
+            >
               Sign in
-            </button>
-            <button className="rounded-xs bg-gold px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft">
+            </Link>
+            <Link
+              href="/register"
+              className="rounded-xs bg-gold px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft"
+            >
               Register
-            </button>
+            </Link>
           </div>
 
           <button
@@ -106,12 +113,20 @@ export function SiteHeader() {
                 </a>
               ))}
               <div className="mt-4 flex flex-col gap-3">
-                <button className="rounded-xs border border-white/30 px-4 py-2.5 text-sm font-medium">
+                <Link
+                  href="/login"
+                  className="rounded-xs border border-white/30 px-4 py-2.5 text-center text-sm font-medium"
+                  onClick={() => setOpen(false)}
+                >
                   Sign in
-                </button>
-                <button className="rounded-xs bg-gold px-4 py-2.5 text-sm font-semibold text-ink">
+                </Link>
+                <Link
+                  href="/register"
+                  className="rounded-xs bg-gold px-4 py-2.5 text-center text-sm font-semibold text-ink"
+                  onClick={() => setOpen(false)}
+                >
                   Register
-                </button>
+                </Link>
               </div>
             </nav>
           </div>
