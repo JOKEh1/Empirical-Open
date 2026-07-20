@@ -13,7 +13,7 @@ export function SectionHeader({ tag, title, viewAll }: SectionHeaderProps) {
         <span className="mb-2 block font-mono text-[11.5px] uppercase tracking-[0.1em] text-jade">
           {tag}
         </span>
-        <h2 className="font-serif text-2xl font-semibold md:text-[29px]">{title}</h2>
+        <h2 className="font-serif text-2xl font-semibold text-gold md:text-[29px]">{title}</h2>
       </div>
       {viewAll && (
         <a
