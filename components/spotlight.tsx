@@ -72,13 +72,13 @@ export function Spotlight() {
                   {item.rank}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <h4 className="text-[14.5px] font-semibold leading-snug">
+                  <h4 className="text-[14.5px] font-semibold leading-snug text-ink">
                     {item.title}
                   </h4>
                   <p className="mt-1 text-xs text-text-soft">{item.journal}</p>
                 </div>
                 <div className="shrink-0 text-right">
-                  <div className="inline-flex items-center gap-1 font-mono text-[13px] font-medium">
+                  <div className="inline-flex items-center gap-1 font-mono text-[13px] font-medium text-ink">
                     <Eye className="size-3.5 text-text-soft" />
                     {item.views}
                   </div>

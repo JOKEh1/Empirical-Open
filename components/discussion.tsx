@@ -31,13 +31,13 @@ export function Discussion() {
                   <span className="mb-1.5 block text-[11.5px] text-jade">
                     {c.article}
                   </span>
-                  <p className="mb-0.5 text-[13.5px] font-semibold">
+                  <p className="mb-0.5 text-[13.5px] font-semibold text-ink">
                     {c.who}
                     <span className="ml-1.5 text-xs font-normal text-text-soft">
                       {c.affiliation}
                     </span>
                   </p>
-                  <p className="text-sm leading-relaxed text-foreground">{c.text}</p>
+                  <p className="text-sm leading-relaxed text-ink">{c.text}</p>
                 </div>
               </div>
             ))}
@@ -45,7 +45,7 @@ export function Discussion() {
 
           <aside className="h-fit rounded-xs border border-line bg-paper-raised p-6">
             <Quote className="mb-3 size-6 text-gold" />
-            <h3 className="mb-3 font-serif text-[15px] font-semibold">
+            <h3 className="mb-3 font-serif text-[15px] font-semibold text-ink">
               How discussion works
             </h3>
             <p className="mb-5 text-[13px] leading-relaxed text-text-soft">

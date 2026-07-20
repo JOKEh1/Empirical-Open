@@ -21,7 +21,7 @@ export function CallsForPapers() {
               <p className="text-xs uppercase tracking-wide text-text-soft">
                 {cfp.journal}
               </p>
-              <h3 className="font-serif text-[19px] font-semibold leading-snug">
+              <h3 className="font-serif text-[19px] font-semibold leading-snug text-ink">
                 {cfp.title}
               </h3>
               <p className="flex-1 text-[13.5px] leading-relaxed text-text-soft">

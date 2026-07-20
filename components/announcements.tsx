@@ -19,7 +19,7 @@ export function Announcements() {
             >
               <time className="font-mono text-xs text-text-soft">{a.date}</time>
               <div>
-                <h3 className="text-[15px] font-semibold">{a.title}</h3>
+                <h3 className="text-[15px] font-semibold text-ink">{a.title}</h3>
                 <p className="mt-0.5 text-[13px] text-text-soft">{a.body}</p>
               </div>
               <span className="whitespace-nowrap text-xs font-medium text-jade">

@@ -42,7 +42,7 @@ export function HostedJournals() {
               <span className="flex size-9 items-center justify-center rounded-md bg-jade-soft font-serif text-sm font-semibold text-jade">
                 {j.init}
               </span>
-              <h3 className="text-[13.5px] font-semibold leading-snug">{j.name}</h3>
+              <h3 className="text-[13.5px] font-semibold leading-snug text-ink">{j.name}</h3>
               <p className="text-[11.5px] text-text-soft">{j.short}</p>
             </button>
           ))}
@@ -85,7 +85,7 @@ export function HostedJournals() {
               </span>
               <h3
                 id="journal-modal-title"
-                className="font-serif text-xl font-semibold leading-snug"
+                className="font-serif text-xl font-semibold leading-snug text-ink"
               >
                 {selected.name}
               </h3>
@@ -97,7 +97,7 @@ export function HostedJournals() {
             <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.08em] text-jade">
               About this journal
             </span>
-            <p className="mb-6 text-[14.5px] leading-relaxed text-foreground">
+            <p className="mb-6 text-[14.5px] leading-relaxed text-ink">
               {selected.desc}
             </p>
 
