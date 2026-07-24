@@ -363,3 +363,34 @@ export function filterJournalsByDiscipline(discipline: string): JournalDetail[] 
   if (discipline === "All disciplines") return journalsDetail
   return journalsDetail.filter((j) => j.discipline === discipline)
 }
+
+export function searchArticles(query: string, discipline?: string): JournalArticle[] {
+  const queryLower = query.toLowerCase()
+  let results: JournalArticle[] = []
+  
+  for (const journal of journalsDetail) {
+    const journalArticles = journal.articles.filter((article) => {
+      const matchesQuery =
+        article.title.toLowerCase().includes(queryLower) ||
+        article.authors.toLowerCase().includes(queryLower) ||
+        article.abstract.toLowerCase().includes(queryLower) ||
+        article.journal.toLowerCase().includes(queryLower)
+      
+      const matchesDiscipline = !discipline || discipline === "All disciplines" || article.discipline === discipline
+      
+      return matchesQuery && matchesDiscipline
+    })
+    
+    results = results.concat(journalArticles)
+  }
+  
+  // Sort by relevance (title matches first) then by views
+  return results.sort((a, b) => {
+    const aTitle = a.title.toLowerCase().includes(queryLower)
+    const bTitle = b.title.toLowerCase().includes(queryLower)
+    
+    if (aTitle && !bTitle) return -1
+    if (!aTitle && bTitle) return 1
+    return b.views - a.views
+  })
+}

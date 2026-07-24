@@ -1,12 +1,30 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Search } from "lucide-react"
 import { disciplines, heroStats } from "@/lib/hub-data"
 
 export function Hero() {
+  const router = useRouter()
   const [active, setActive] = useState("All disciplines")
   const [query, setQuery] = useState("soil microbiome Sahel")
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const params = new URLSearchParams()
+    
+    if (query.trim()) {
+      params.append("q", query.trim())
+    }
+    
+    if (active !== "All disciplines") {
+      params.append("discipline", active)
+    }
+    
+    const searchUrl = `/search${params.toString() ? `?${params.toString()}` : ""}`
+    router.push(searchUrl)
+  }
 
   return (
     <section className="relative overflow-hidden bg-ink text-paper-raised">
@@ -40,7 +58,7 @@ export function Hero() {
         {/* Search panel */}
         <form
           className="mt-9 flex max-w-[720px] flex-col gap-2 rounded-xs bg-paper-raised p-2 shadow-2xl sm:flex-row"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={handleSearch}
         >
           <div className="flex flex-1 items-center gap-2 px-3">
             <Search className="size-5 shrink-0 text-text-soft" />
