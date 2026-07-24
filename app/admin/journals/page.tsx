@@ -1,8 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 import { Plus, CheckCircle, AlertCircle, Clock, Trash2 } from 'lucide-react'
+import { isAuthenticated, isAdmin } from '@/lib/auth'
 
 type JournalStatus = 'active' | 'pending' | 'paused'
 
@@ -47,8 +49,17 @@ const statusConfig = {
 }
 
 export default function JournalRegistry() {
+  const router = useRouter()
   const [journals, setJournals] = useState<RegisteredJournal[]>(mockJournals)
   const [showForm, setShowForm] = useState(false)
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.push('/login?redirect=/admin/journals')
+    } else if (!isAdmin()) {
+      router.push('/')
+    }
+  }, [])
   const [formData, setFormData] = useState({
     name: '',
     oaiEndpoint: '',

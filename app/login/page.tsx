@@ -1,14 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Lock, LogIn, Mail } from "lucide-react"
 import { AuthShell } from "@/components/auth/auth-shell"
 import { AuthField } from "@/components/auth/auth-field"
+import { setCurrentUser } from "@/lib/auth"
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function LoginPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get("redirect") || "/"
+  
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [remember, setRemember] = useState(true)
@@ -17,6 +23,25 @@ export default function LoginPage() {
 
   const emailError = touched && !emailPattern.test(email) ? "Enter a valid email address." : ""
   const passwordError = touched && password.length < 1 ? "Password is required." : ""
+
+  useEffect(() => {
+    if (submitted) {
+      const timer = setTimeout(() => {
+        // Simulate successful login - set user as admin for demo
+        setCurrentUser({
+          id: "user-001",
+          email: email,
+          role: "admin",
+          name: email.split("@")[0],
+        })
+        
+        // Redirect to the intended page or dashboard
+        router.push(redirectTo)
+      }, 1500)
+      
+      return () => clearTimeout(timer)
+    }
+  }, [submitted, redirectTo, router, email])
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

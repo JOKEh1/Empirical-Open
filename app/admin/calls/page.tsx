@@ -1,8 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 import { Plus, Calendar, Edit2, Trash2, X } from 'lucide-react'
+import { isAuthenticated, isAdmin } from '@/lib/auth'
 
 const disciplines = [
   'Agricultural Sciences',
@@ -49,6 +51,7 @@ const mockCFPs: SpecialIssue[] = [
 ]
 
 export default function CallsManager() {
+  const router = useRouter()
   const [calls, setCalls] = useState<SpecialIssue[]>(mockCFPs)
   const [showForm, setShowForm] = useState(false)
   const [selectedDisciplines, setSelectedDisciplines] = useState<string[]>([])
@@ -58,6 +61,14 @@ export default function CallsManager() {
     scope: '',
     deadline: '',
   })
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.push('/login?redirect=/admin/calls')
+    } else if (!isAdmin()) {
+      router.push('/')
+    }
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
