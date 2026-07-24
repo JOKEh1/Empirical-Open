@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { Quote } from "lucide-react"
 import { SectionHeader } from "@/components/section-header"
 import { comments } from "@/lib/hub-data"
@@ -53,9 +54,9 @@ export function Discussion() {
               journal&apos;s editors moderate discussion on their own articles, and
               every comment can be flagged for review.
             </p>
-            <button className="w-full rounded-xs bg-gold px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft">
+            <Link href="/login" className="block w-full rounded-xs bg-gold px-4 py-2.5 text-center text-sm font-semibold text-ink transition-colors hover:bg-gold-soft">
               Sign in to comment
-            </button>
+            </Link>
           </aside>
         </div>
       </div>
