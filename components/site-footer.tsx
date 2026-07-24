@@ -57,7 +57,6 @@ export function SiteFooter() {
 
         <div className="mt-9 border-t border-white/10 pt-5 text-xs">
           © 2026 EmpiricalOpen — a product of Midach Academic Support Services Ltd.
-          Demo interface for design review.
         </div>
       </div>
     </footer>
