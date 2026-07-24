@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Menu, X, ChevronDown } from "lucide-react"
+import { Menu, X } from "lucide-react"
 
 const navLinks = [
   { label: "Discover", href: "/", active: true },
@@ -16,7 +16,6 @@ const topLinks = ["For Institutions", "Host Your Journal", "Help"]
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
-  const [showAuthorMenu, setShowAuthorMenu] = useState(false)
 
   return (
     <div className="sticky top-0 z-40">
@@ -70,50 +69,9 @@ export function SiteHeader() {
                 )}
               </Link>
             ))}
-            <div className="relative">
-              <button
-                onMouseEnter={() => setShowAuthorMenu(true)}
-                onMouseLeave={() => setShowAuthorMenu(false)}
-                className="flex items-center gap-1 py-1.5 transition-opacity hover:opacity-100 opacity-80"
-              >
-                Author <ChevronDown className="h-3 w-3" />
-              </button>
-              {showAuthorMenu && (
-                <div
-                  onMouseEnter={() => setShowAuthorMenu(true)}
-                  onMouseLeave={() => setShowAuthorMenu(false)}
-                  className="absolute top-full right-0 mt-2 w-48 rounded-xs border border-white/20 bg-ink shadow-lg"
-                >
-                  <Link
-                    href="/author/dashboard"
-                    className="block px-4 py-2.5 text-sm hover:bg-white/10 border-b border-white/10 first:rounded-t-xs"
-                  >
-                    My Dashboard
-                  </Link>
-                  <Link
-                    href="/author/submissions"
-                    className="block px-4 py-2.5 text-sm hover:bg-white/10 border-b border-white/10"
-                  >
-                    My Submissions
-                  </Link>
-                  <Link
-                    href="/submit"
-                    className="block px-4 py-2.5 text-sm hover:bg-white/10 text-gold font-medium rounded-b-xs"
-                  >
-                    Submit New Manuscript
-                  </Link>
-                </div>
-              )}
-            </div>
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
-            <Link
-              href="/submit"
-              className="rounded-xs border border-white/30 px-4 py-2 text-sm font-medium transition-colors hover:border-white/60"
-            >
-              Submit
-            </Link>
             <Link
               href="/login"
               className="rounded-xs border border-white/30 px-4 py-2 text-sm font-medium transition-colors hover:border-white/60"
@@ -154,20 +112,6 @@ export function SiteHeader() {
                   {l.label}
                 </Link>
               ))}
-              <Link
-                href="/author/dashboard"
-                className="border-b border-white/10 py-3 text-sm opacity-85"
-                onClick={() => setOpen(false)}
-              >
-                Author Dashboard
-              </Link>
-              <Link
-                href="/submit"
-                className="border-b border-white/10 py-3 text-sm text-gold font-medium"
-                onClick={() => setOpen(false)}
-              >
-                Submit Manuscript
-              </Link>
               <div className="mt-4 flex flex-col gap-3">
                 <Link
                   href="/login"

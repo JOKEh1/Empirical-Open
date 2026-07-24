@@ -173,9 +173,9 @@ export default function JournalDetailPage() {
               </div>
 
               {/* CTA */}
-              <Link href="/submit" className="block w-full rounded-xs bg-gold px-4 py-3 font-semibold text-ink transition-colors hover:bg-gold-soft text-center">
+              <button className="w-full rounded-xs bg-gold px-4 py-3 font-semibold text-ink transition-colors hover:bg-gold-soft">
                 Submit your work
-              </Link>
+              </button>
             </div>
           </div>
         </div>
