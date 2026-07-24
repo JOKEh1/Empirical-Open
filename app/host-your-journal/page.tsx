@@ -1,0 +1,261 @@
+"use client"
+
+import { useState } from "react"
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
+import { CheckCircle, Globe, Users, Zap, TrendingUp, Shield, ArrowRight } from "lucide-react"
+
+export default function HostYourJournalPage() {
+  const [showForm, setShowForm] = useState(false)
+  const [formData, setFormData] = useState({
+    journalName: "",
+    institution: "",
+    email: "",
+    currentPlatform: "",
+  })
+  const [submitted, setSubmitted] = useState(false)
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmitted(true)
+    setFormData({ journalName: "", institution: "", email: "", currentPlatform: "" })
+    setTimeout(() => setSubmitted(false), 5000)
+  }
+
+  const benefits = [
+    {
+      icon: Globe,
+      title: "Global Visibility",
+      description: "Your research reaches scholars worldwide through our centralized discovery platform.",
+      color: "text-jade",
+    },
+    {
+      icon: Users,
+      title: "Reader Engagement",
+      description: "Access to a community of researchers actively searching for African scholarship.",
+      color: "text-gold",
+    },
+    {
+      icon: Zap,
+      title: "Automated Harvesting",
+      description: "OAI-PMH integration means metadata updates happen automatically—no manual work required.",
+      color: "text-rust",
+    },
+    {
+      icon: TrendingUp,
+      title: "Usage Analytics",
+      description: "Track article downloads, discussions, and citations through your admin dashboard.",
+      color: "text-jade",
+    },
+    {
+      icon: Shield,
+      title: "Complete Independence",
+      description: "You retain full editorial control. We never modify your content or policies.",
+      color: "text-gold",
+    },
+    {
+      icon: CheckCircle,
+      title: "Zero Cost Integration",
+      description: "Free to join. No fees, no hidden costs. Just global reach for your research.",
+      color: "text-rust",
+    },
+  ]
+
+  return (
+    <>
+      <SiteHeader />
+      <main>
+        {/* Hero section */}
+        <section className="bg-background border-b border-line">
+          <div className="mx-auto max-w-[1180px] px-6 py-16 md:px-8 md:py-24">
+            <div className="max-w-3xl">
+              <h1 className="font-serif text-4xl font-bold text-gold md:text-5xl mb-6">
+                Host Your Journal with EmpiricalOpen
+              </h1>
+              <p className="text-lg text-text-soft leading-relaxed mb-8">
+                Give your university's research global visibility. Join the network of African publishers 
+                making peer-reviewed scholarship discoverable and accessible.
+              </p>
+              <button
+                onClick={() => setShowForm(!showForm)}
+                className="inline-flex items-center gap-2 rounded-xs bg-gold px-6 py-3 font-semibold text-ink transition-colors hover:bg-gold-soft"
+              >
+                Request Integration <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Benefits section */}
+        <section className="border-b border-line">
+          <div className="mx-auto max-w-[1180px] px-6 py-14 md:px-8 md:py-20">
+            <h2 className="font-serif text-2xl font-bold text-gold mb-12 text-center">Why Join EmpiricalOpen?</h2>
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {benefits.map((benefit) => {
+                const IconComponent = benefit.icon
+                return (
+                  <div key={benefit.title} className="rounded-xs border border-white/10 bg-paper p-6">
+                    <IconComponent className={`h-8 w-8 ${benefit.color} mb-3`} />
+                    <h3 className="font-semibold text-ink mb-2">{benefit.title}</h3>
+                    <p className="text-sm text-ink-soft">{benefit.description}</p>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* How it works section */}
+        <section className="border-b border-line">
+          <div className="mx-auto max-w-[1180px] px-6 py-14 md:px-8 md:py-20">
+            <h2 className="font-serif text-2xl font-bold text-gold mb-12">How It Works</h2>
+            <div className="grid gap-12 md:grid-cols-4">
+              {[
+                { step: 1, title: "Contact Us", desc: "Tell us about your journal and platform" },
+                { step: 2, title: "Technical Setup", desc: "Enable OAI-PMH on your OJS or platform" },
+                { step: 3, title: "Integration", desc: "We harvest and index your metadata" },
+                { step: 4, title: "Launch", desc: "Your research goes global instantly" },
+              ].map((item) => (
+                <div key={item.step}>
+                  <div className="flex items-center justify-center mb-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gold text-ink font-bold text-lg">
+                      {item.step}
+                    </div>
+                  </div>
+                  <h3 className="font-semibold text-ink text-center mb-2">{item.title}</h3>
+                  <p className="text-sm text-text-soft text-center">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Integration form */}
+        {showForm && (
+          <section className="border-b border-line">
+            <div className="mx-auto max-w-[1180px] px-6 py-14 md:px-8 md:py-20">
+              <h2 className="font-serif text-2xl font-bold text-gold mb-8">Request Integration</h2>
+              <form onSubmit={handleSubmit} className="max-w-2xl space-y-6 rounded-xs border border-white/10 bg-paper p-8">
+                <div>
+                  <label className="block text-sm font-medium text-ink mb-2">Journal Name</label>
+                  <input
+                    type="text"
+                    name="journalName"
+                    value={formData.journalName}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-ink placeholder-text-soft focus:outline-none focus:border-gold transition-colors"
+                    placeholder="e.g., Journal of African Studies"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-ink mb-2">Institution</label>
+                  <input
+                    type="text"
+                    name="institution"
+                    value={formData.institution}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-ink placeholder-text-soft focus:outline-none focus:border-gold transition-colors"
+                    placeholder="University name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-ink mb-2">Institutional Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-ink placeholder-text-soft focus:outline-none focus:border-gold transition-colors"
+                    placeholder="contact@university.edu"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-ink mb-2">Current Publishing Platform</label>
+                  <select
+                    name="currentPlatform"
+                    value={formData.currentPlatform}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-ink focus:outline-none focus:border-gold transition-colors"
+                  >
+                    <option value="">Select a platform</option>
+                    <option value="ojs">Open Journal Systems (OJS)</option>
+                    <option value="wordpress">WordPress with journal plugin</option>
+                    <option value="custom">Custom platform</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                {submitted && (
+                  <div className="rounded-xs bg-jade/10 border border-jade/30 px-4 py-3">
+                    <p className="text-sm text-jade font-medium">
+                      Thank you! We've received your request. Our team will contact you within 2 business days.
+                    </p>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full rounded-xs bg-gold px-6 py-3 font-semibold text-ink transition-colors hover:bg-gold-soft"
+                >
+                  Submit Request
+                </button>
+              </form>
+            </div>
+          </section>
+        )}
+
+        {/* FAQ section */}
+        <section className="bg-paper-raised">
+          <div className="mx-auto max-w-[1180px] px-6 py-14 md:px-8 md:py-20">
+            <h2 className="font-serif text-2xl font-bold text-gold mb-12">Frequently Asked Questions</h2>
+            <div className="grid gap-8 md:grid-cols-2">
+              {[
+                {
+                  q: "What is OAI-PMH?",
+                  a: "OAI-PMH (Open Archives Initiative - Protocol for Metadata Harvesting) is a standard protocol for sharing article metadata. Most journal platforms including OJS support it natively.",
+                },
+                {
+                  q: "How quickly will our content appear?",
+                  a: "After setup is complete, we harvest new articles every 24 hours. Your content typically appears in search within 48 hours.",
+                },
+                {
+                  q: "What if we use a custom platform?",
+                  a: "We can work with custom platforms too! Check our Onboarding Guide for technical details, or contact us for custom solutions.",
+                },
+                {
+                  q: "Do we retain editorial control?",
+                  a: "Absolutely. We only aggregate and index your metadata—you maintain complete control over your journal's content and policies.",
+                },
+                {
+                  q: "Is there a cost?",
+                  a: "No cost at all. EmpiricalOpen is a free service for African publishers and research institutions.",
+                },
+                {
+                  q: "Can we remove our content?",
+                  a: "Yes. You can disable OAI-PMH harvesting at any time, and we'll stop indexing your articles within 48 hours.",
+                },
+              ].map((faq, i) => (
+                <div key={i}>
+                  <h3 className="font-semibold text-ink mb-2">{faq.q}</h3>
+                  <p className="text-sm text-text-soft">{faq.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </>
+  )
+}

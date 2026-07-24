@@ -1,15 +1,28 @@
+import Link from "next/link"
+
 const columns = [
   {
     heading: "Discover",
-    links: ["Search articles", "Browse journals", "Calls for papers"],
+    links: [
+      { label: "Search articles", href: "/" },
+      { label: "Browse journals", href: "/journals" },
+      { label: "Calls for papers", href: "/calls-for-papers" },
+    ],
   },
   {
     heading: "For institutions",
-    links: ["Host your journal", "Onboarding guide", "Editor dashboard"],
+    links: [
+      { label: "Host your journal", href: "/host-your-journal" },
+      { label: "Onboarding guide", href: "/onboarding" },
+      { label: "Editor dashboard", href: "/admin/dashboard" },
+    ],
   },
   {
     heading: "About",
-    links: ["EmpiricalOpen", "Contact"],
+    links: [
+      { label: "EmpiricalOpen", href: "/about" },
+      { label: "Contact", href: "/contact" },
+    ],
   },
 ]
 
@@ -25,11 +38,11 @@ export function SiteFooter() {
                   {col.heading}
                 </h3>
                 <ul className="flex flex-col gap-2.5 text-[13px]">
-                  {col.links.map((l) => (
-                    <li key={l}>
-                      <a href="#" className="transition-colors hover:text-paper-raised">
-                        {l}
-                      </a>
+                  {col.links.map((l, i) => (
+                    <li key={i}>
+                      <Link href={l.href} className="transition-colors hover:text-paper-raised">
+                        {l.label}
+                      </Link>
                     </li>
                   ))}
                 </ul>
