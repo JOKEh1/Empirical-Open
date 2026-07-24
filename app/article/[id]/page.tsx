@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useParams } from "next/navigation"
 import { SiteHeader } from "@/components/site-header"
 import { getArticleById } from "@/lib/journals-data"
+import { ArticleDiscussion } from "@/components/discussion/article-discussion"
 import {
   ArrowLeft,
   Calendar,
@@ -184,6 +185,9 @@ export default function ArticleReaderPage() {
             </div>
           </div>
         </div>
+
+        {/* Discussion section */}
+        <ArticleDiscussion articleId={params.id as string} />
       </main>
     </>
   )

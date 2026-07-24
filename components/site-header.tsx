@@ -9,7 +9,7 @@ const navLinks = [
   { label: "Journals", href: "/journals" },
   { label: "Calls for Papers", href: "/calls-for-papers" },
   { label: "Announcements", href: "/announcements" },
-  { label: "Discussions", href: "#" },
+  { label: "Discussions", href: "/discussions" },
 ]
 
 const topLinks = ["For Institutions", "Host Your Journal", "Help"]
