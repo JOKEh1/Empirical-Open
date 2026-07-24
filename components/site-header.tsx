@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, Settings } from "lucide-react"
+import { Menu, X } from "lucide-react"
 
 const navLinks = [
   { label: "Discover", href: "/" },
@@ -17,15 +17,12 @@ const topLinks = ["For Institutions", "Host Your Journal", "Help"]
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
-  const [showAdminMenu, setShowAdminMenu] = useState(false)
   const pathname = usePathname()
   
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/"
     return pathname.startsWith(href)
   }
-  
-  const isAdminPath = pathname.startsWith("/admin")
 
   return (
     <div className="sticky top-0 z-40">
@@ -64,42 +61,6 @@ export function SiteHeader() {
                 </Link>
               )
             })}
-            <div className="relative">
-              <button
-                onMouseEnter={() => setShowAdminMenu(true)}
-                onMouseLeave={() => setShowAdminMenu(false)}
-                className="flex items-center gap-1 py-1.5 transition-opacity hover:opacity-100 opacity-80"
-              >
-                <Settings className="h-4 w-4" />
-                Admin
-              </button>
-              {showAdminMenu && (
-                <div
-                  onMouseEnter={() => setShowAdminMenu(true)}
-                  onMouseLeave={() => setShowAdminMenu(false)}
-                  className="absolute top-full right-0 mt-2 w-48 rounded-xs border border-white/20 bg-ink shadow-lg"
-                >
-                  <Link
-                    href="/admin/dashboard"
-                    className="block px-4 py-2.5 text-sm hover:bg-white/10 border-b border-white/10 first:rounded-t-xs"
-                  >
-                    Admin Dashboard
-                  </Link>
-                  <Link
-                    href="/admin/journals"
-                    className="block px-4 py-2.5 text-sm hover:bg-white/10 border-b border-white/10"
-                  >
-                    Journal Registry
-                  </Link>
-                  <Link
-                    href="/admin/calls"
-                    className="block px-4 py-2.5 text-sm hover:bg-white/10 rounded-b-xs"
-                  >
-                    Calls Manager
-                  </Link>
-                </div>
-              )}
-            </div>
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
