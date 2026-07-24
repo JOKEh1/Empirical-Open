@@ -71,7 +71,7 @@ export function AuthShell({
         </div>
 
         <p className="relative font-mono text-xs text-paper-raised/40">
-          DEMO — EmpiricalOpen Central Hub
+          EmpiricalOpen Central Hub
         </p>
       </section>
 
