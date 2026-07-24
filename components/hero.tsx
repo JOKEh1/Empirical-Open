@@ -28,12 +28,22 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden bg-ink text-paper-raised">
-      {/* soft radial glow */}
+      {/* soft radial glow - top right */}
       <div
         className="pointer-events-none absolute -right-32 -top-40 size-[520px] rounded-full"
         style={{
           background:
             "radial-gradient(circle at 35% 35%, rgba(201,138,44,.18), transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
+      
+      {/* soft radial glow - top left (mirrored) */}
+      <div
+        className="pointer-events-none absolute -left-32 -top-40 size-[520px] rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle at 65% 35%, rgba(201,138,44,.18), transparent 70%)",
         }}
         aria-hidden="true"
       />
