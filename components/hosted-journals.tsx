@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useEffect, useState } from "react"
 import { X, ArrowRight, ExternalLink } from "lucide-react"
 import { SectionHeader } from "@/components/section-header"
@@ -30,6 +31,7 @@ export function HostedJournals() {
           tag="The network"
           title="Hosted journals"
           viewAll="Browse full directory"
+          viewAllHref="/journals"
         />
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -47,15 +49,17 @@ export function HostedJournals() {
             </button>
           ))}
 
-          <div className="flex flex-col gap-2 rounded-xs border border-line bg-paper-raised/60 p-5">
-            <span className="flex size-9 items-center justify-center rounded-md bg-jade-soft font-serif text-sm font-semibold text-jade">
-              +43
-            </span>
-            <h3 className="text-[13.5px] font-semibold leading-snug text-text-soft">
-              More journals
-            </h3>
-            <p className="text-[11.5px] text-text-soft">Browse the full directory</p>
-          </div>
+          <Link href="/journals">
+            <div className="flex flex-col gap-2 rounded-xs border border-line bg-paper-raised/60 p-5 transition-all hover:border-gold hover:bg-paper-raised cursor-pointer">
+              <span className="flex size-9 items-center justify-center rounded-md bg-jade-soft font-serif text-sm font-semibold text-jade">
+                +43
+              </span>
+              <h3 className="text-[13.5px] font-semibold leading-snug text-text-soft">
+                More journals
+              </h3>
+              <p className="text-[11.5px] text-text-soft">Browse the full directory</p>
+            </div>
+          </Link>
         </div>
       </div>
 
