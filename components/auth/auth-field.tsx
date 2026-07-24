@@ -61,7 +61,7 @@ export function AuthField({
           autoComplete={autoComplete}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
-          className="w-full bg-transparent py-2.5 text-[15px] text-paper-raised outline-none placeholder:text-paper-raised/35"
+          className="w-full bg-transparent py-2.5 text-[15px] text-slate-900 outline-none placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600"
         />
         {isPassword ? (
           <button

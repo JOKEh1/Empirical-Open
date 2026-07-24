@@ -97,7 +97,7 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-xs border border-white/10 bg-paper px-4 py-3 text-ink placeholder-text-soft focus:outline-none focus:border-gold transition-colors"
+                      className="w-full rounded-xs border border-white/10 bg-paper px-4 py-3 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:outline-none focus:border-gold transition-colors"
                       placeholder="Your full name"
                     />
                   </div>
@@ -110,7 +110,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-xs border border-white/10 bg-paper px-4 py-3 text-ink placeholder-text-soft focus:outline-none focus:border-gold transition-colors"
+                      className="w-full rounded-xs border border-white/10 bg-paper px-4 py-3 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:outline-none focus:border-gold transition-colors"
                       placeholder="your@institution.edu"
                     />
                   </div>
@@ -123,7 +123,7 @@ export default function ContactPage() {
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-xs border border-white/10 bg-paper px-4 py-3 text-ink placeholder-text-soft focus:outline-none focus:border-gold transition-colors"
+                      className="w-full rounded-xs border border-white/10 bg-paper px-4 py-3 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:outline-none focus:border-gold transition-colors"
                       placeholder="What is this about?"
                     />
                   </div>
@@ -136,7 +136,7 @@ export default function ContactPage() {
                       onChange={handleChange}
                       required
                       rows={6}
-                      className="w-full rounded-xs border border-white/10 bg-paper px-4 py-3 text-ink placeholder-text-soft focus:outline-none focus:border-gold transition-colors resize-none"
+                      className="w-full rounded-xs border border-white/10 bg-paper px-4 py-3 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:outline-none focus:border-gold transition-colors resize-none"
                       placeholder="Your message..."
                     />
                   </div>

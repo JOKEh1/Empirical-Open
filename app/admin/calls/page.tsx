@@ -148,7 +148,7 @@ export default function CallsManager() {
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       placeholder="e.g., Climate Change in West Africa"
-                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-paper placeholder-text-soft focus:border-gold focus:outline-none"
+                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                       required
                     />
                   </div>
@@ -159,7 +159,7 @@ export default function CallsManager() {
                     <select
                       value={formData.journal}
                       onChange={(e) => setFormData({ ...formData, journal: e.target.value })}
-                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-paper focus:border-gold focus:outline-none"
+                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 focus:border-gold focus:outline-none"
                       required
                     >
                       <option value="">Select a journal...</option>
@@ -185,7 +185,7 @@ export default function CallsManager() {
                     onChange={(e) => setFormData({ ...formData, scope: e.target.value })}
                     placeholder="Describe the scope, themes, and topics for this special issue..."
                     rows={5}
-                    className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-paper placeholder-text-soft focus:border-gold focus:outline-none"
+                    className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                     required
                   />
                 </div>

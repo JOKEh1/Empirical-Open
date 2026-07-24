@@ -49,7 +49,7 @@ export function Hero() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search articles, authors, journals, or keywords…"
-              className="w-full bg-transparent py-3 text-[15px] text-foreground outline-none placeholder:text-text-soft"
+              className="w-full bg-transparent py-3 text-[15px] text-slate-900 outline-none placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600"
               aria-label="Search"
             />
           </div>

@@ -114,7 +114,7 @@ export default function JournalRegistry() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="Full journal title"
-                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-paper placeholder-text-soft focus:border-gold focus:outline-none"
+                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                       required
                     />
                   </div>
@@ -127,7 +127,7 @@ export default function JournalRegistry() {
                       value={formData.institution}
                       onChange={(e) => setFormData({ ...formData, institution: e.target.value })}
                       placeholder="University or organization"
-                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-paper placeholder-text-soft focus:border-gold focus:outline-none"
+                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                       required
                     />
                   </div>
@@ -142,7 +142,7 @@ export default function JournalRegistry() {
                     value={formData.oaiEndpoint}
                     onChange={(e) => setFormData({ ...formData, oaiEndpoint: e.target.value })}
                     placeholder="https://example.org/oai"
-                    className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-paper placeholder-text-soft focus:border-gold focus:outline-none"
+                    className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                     required
                   />
                   <p className="text-xs text-text-soft mt-1">
@@ -160,7 +160,7 @@ export default function JournalRegistry() {
                       value={formData.homepage}
                       onChange={(e) => setFormData({ ...formData, homepage: e.target.value })}
                       placeholder="https://journal.example.org"
-                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-paper placeholder-text-soft focus:border-gold focus:outline-none"
+                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                       required
                     />
                   </div>
@@ -173,7 +173,7 @@ export default function JournalRegistry() {
                       value={formData.submissionUrl}
                       onChange={(e) => setFormData({ ...formData, submissionUrl: e.target.value })}
                       placeholder="https://ojs.example.org/submit"
-                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-paper placeholder-text-soft focus:border-gold focus:outline-none"
+                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                       required
                     />
                   </div>

@@ -148,7 +148,7 @@ export default function HostYourJournalPage() {
                     value={formData.journalName}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-ink placeholder-text-soft focus:outline-none focus:border-gold transition-colors"
+                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:outline-none focus:border-gold transition-colors"
                     placeholder="e.g., Journal of African Studies"
                   />
                 </div>
@@ -161,7 +161,7 @@ export default function HostYourJournalPage() {
                     value={formData.institution}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-ink placeholder-text-soft focus:outline-none focus:border-gold transition-colors"
+                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:outline-none focus:border-gold transition-colors"
                     placeholder="University name"
                   />
                 </div>
@@ -174,7 +174,7 @@ export default function HostYourJournalPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-ink placeholder-text-soft focus:outline-none focus:border-gold transition-colors"
+                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:outline-none focus:border-gold transition-colors"
                     placeholder="contact@university.edu"
                   />
                 </div>
@@ -186,7 +186,7 @@ export default function HostYourJournalPage() {
                     value={formData.currentPlatform}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-ink focus:outline-none focus:border-gold transition-colors"
+                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-slate-900 focus:outline-none focus:border-gold transition-colors"
                   >
                     <option value="">Select a platform</option>
                     <option value="ojs">Open Journal Systems (OJS)</option>
