@@ -5,11 +5,11 @@ import Link from "next/link"
 import { Menu, X } from "lucide-react"
 
 const navLinks = [
-  { label: "Discover", active: true },
-  { label: "Journals" },
-  { label: "Calls for Papers" },
-  { label: "Announcements" },
-  { label: "Discussions" },
+  { label: "Discover", href: "/", active: true },
+  { label: "Journals", href: "/journals" },
+  { label: "Calls for Papers", href: "#" },
+  { label: "Announcements", href: "#" },
+  { label: "Discussions", href: "#" },
 ]
 
 const topLinks = ["For Institutions", "Host Your Journal", "Help"]
@@ -40,7 +40,7 @@ export function SiteHeader() {
       {/* Main header */}
       <header className="border-b border-white/10 bg-ink text-paper-raised">
         <div className="mx-auto flex h-[76px] max-w-[1180px] items-center justify-between px-6 md:px-8">
-          <a href="#" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5">
             <span
               className="size-9 shrink-0 rounded-full"
               style={{
@@ -52,13 +52,13 @@ export function SiteHeader() {
             <span className="font-serif text-xl font-semibold tracking-tight">
               Empirical<span className="text-gold-soft">Open</span>
             </span>
-          </a>
+          </Link>
 
           <nav className="hidden items-center gap-8 text-sm lg:flex">
             {navLinks.map((l) => (
-              <a
+              <Link
                 key={l.label}
-                href="#"
+                href={l.href}
                 className={`relative py-1.5 transition-opacity hover:opacity-100 ${
                   l.active ? "opacity-100" : "opacity-80"
                 }`}
@@ -67,7 +67,7 @@ export function SiteHeader() {
                 {l.active && (
                   <span className="absolute inset-x-0 -bottom-0.5 h-0.5 bg-gold" />
                 )}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -101,16 +101,16 @@ export function SiteHeader() {
           <div className="border-t border-white/10 bg-ink md:hidden">
             <nav className="mx-auto flex max-w-[1180px] flex-col px-6 py-4">
               {navLinks.map((l) => (
-                <a
+                <Link
                   key={l.label}
-                  href="#"
+                  href={l.href}
                   className={`border-b border-white/10 py-3 text-sm ${
                     l.active ? "text-gold-soft" : "opacity-85"
                   }`}
                   onClick={() => setOpen(false)}
                 >
                   {l.label}
-                </a>
+                </Link>
               ))}
               <div className="mt-4 flex flex-col gap-3">
                 <Link
