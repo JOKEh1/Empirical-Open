@@ -46,7 +46,7 @@ export function CommentCard({ comment }: { comment: Comment }) {
           <p className="mb-2 text-xs text-text-soft">{comment.authorAffiliation}</p>
 
           {/* Comment text */}
-          <p className="mb-3 text-sm leading-relaxed text-ink">{comment.text}</p>
+          <p className="mb-3 text-sm leading-relaxed text-slate-100">{comment.text}</p>
 
           {/* Metadata and actions */}
           <div className="flex items-center gap-4 text-xs text-text-soft">
@@ -129,7 +129,7 @@ function ReplyCard({ reply }: { reply: CommentReply }) {
 
         <p className="mb-1 text-[11px] text-text-soft">{reply.authorAffiliation}</p>
 
-        <p className="mb-2 text-xs leading-relaxed text-ink">{reply.text}</p>
+        <p className="mb-2 text-xs leading-relaxed text-slate-100">{reply.text}</p>
 
         <div className="flex items-center gap-3 text-[11px] text-text-soft">
           <span>{reply.timestamp}</span>

@@ -5,7 +5,7 @@ import { SiteHeader } from '@/components/site-header'
 import { SectionHeader } from '@/components/section-header'
 import { getAllDiscussionComments } from '@/lib/discussion-data'
 import { CommentCard } from '@/components/discussion/comment-card'
-import { ArrowLeft, MessageCircle, Users } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
 export default function DiscussionsPage() {
   const comments = getAllDiscussionComments()
@@ -33,22 +33,6 @@ export default function DiscussionsPage() {
                 <p className="mt-2 text-sm text-text-soft">
                   Community feedback on articles across the EmpiricalOpen network
                 </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats bar */}
-        <div className="border-b border-line bg-paper-raised">
-          <div className="mx-auto max-w-[1180px] px-6 py-4 md:px-8">
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2">
-                <MessageCircle className="size-5 text-gold" />
-                <span className="text-sm font-medium text-ink">{comments.length} active discussions</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Users className="size-5 text-jade" />
-                <span className="text-sm font-medium text-ink">All comments verified</span>
               </div>
             </div>
           </div>

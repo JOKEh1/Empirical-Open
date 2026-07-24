@@ -2,10 +2,11 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 
 const navLinks = [
-  { label: "Discover", href: "/", active: true },
+  { label: "Discover", href: "/" },
   { label: "Journals", href: "/journals" },
   { label: "Calls for Papers", href: "/calls-for-papers" },
   { label: "Announcements", href: "/announcements" },
@@ -16,27 +17,15 @@ const topLinks = ["For Institutions", "Host Your Journal", "Help"]
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+  
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/"
+    return pathname.startsWith(href)
+  }
 
   return (
     <div className="sticky top-0 z-40">
-      {/* Top bar */}
-      <div className="hidden bg-ink text-paper-raised md:block">
-        <div className="mx-auto flex h-9 max-w-[1180px] items-center justify-between px-8 text-xs tracking-wide">
-          <span className="opacity-60">DEMO — EmpiricalOpen Central Hub</span>
-          <div className="flex items-center gap-5">
-            {topLinks.map((l) => (
-              <a
-                key={l}
-                href="#"
-                className="opacity-80 transition-opacity hover:opacity-100 hover:underline"
-              >
-                {l}
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Main header */}
       <header className="border-b border-white/10 bg-ink text-paper-raised">
         <div className="mx-auto flex h-[76px] max-w-[1180px] items-center justify-between px-6 md:px-8">
@@ -55,20 +44,23 @@ export function SiteHeader() {
           </Link>
 
           <nav className="hidden items-center gap-8 text-sm lg:flex">
-            {navLinks.map((l) => (
-              <Link
-                key={l.label}
-                href={l.href}
-                className={`relative py-1.5 transition-opacity hover:opacity-100 ${
-                  l.active ? "opacity-100" : "opacity-80"
-                }`}
-              >
-                {l.label}
-                {l.active && (
-                  <span className="absolute inset-x-0 -bottom-0.5 h-0.5 bg-gold" />
-                )}
-              </Link>
-            ))}
+            {navLinks.map((l) => {
+              const active = isActive(l.href)
+              return (
+                <Link
+                  key={l.label}
+                  href={l.href}
+                  className={`relative py-1.5 transition-opacity hover:opacity-100 ${
+                    active ? "opacity-100" : "opacity-80"
+                  }`}
+                >
+                  {l.label}
+                  {active && (
+                    <span className="absolute inset-x-0 -bottom-0.5 h-0.5 bg-gold" />
+                  )}
+                </Link>
+              )
+            })}
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
@@ -100,18 +92,21 @@ export function SiteHeader() {
         {open && (
           <div className="border-t border-white/10 bg-ink md:hidden">
             <nav className="mx-auto flex max-w-[1180px] flex-col px-6 py-4">
-              {navLinks.map((l) => (
-                <Link
-                  key={l.label}
-                  href={l.href}
-                  className={`border-b border-white/10 py-3 text-sm ${
-                    l.active ? "text-gold-soft" : "opacity-85"
-                  }`}
-                  onClick={() => setOpen(false)}
-                >
-                  {l.label}
-                </Link>
-              ))}
+              {navLinks.map((l) => {
+                const active = isActive(l.href)
+                return (
+                  <Link
+                    key={l.label}
+                    href={l.href}
+                    className={`border-b border-white/10 py-3 text-sm ${
+                      active ? "text-gold-soft" : "opacity-85"
+                    }`}
+                    onClick={() => setOpen(false)}
+                  >
+                    {l.label}
+                  </Link>
+                )
+              })}
               <div className="mt-4 flex flex-col gap-3">
                 <Link
                   href="/login"
