@@ -9,6 +9,7 @@ export function Announcements() {
           tag="Across the network"
           title="Announcements"
           viewAll="View all"
+          viewAllHref="/announcements"
         />
 
         <div className="flex flex-col">

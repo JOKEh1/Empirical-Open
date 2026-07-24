@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { Clock } from "lucide-react"
 import { SectionHeader } from "@/components/section-header"
 import { callsForPapers } from "@/lib/hub-data"
@@ -10,6 +11,7 @@ export function CallsForPapers() {
           tag="Open submissions"
           title="Calls for Papers"
           viewAll="View all open calls"
+          viewAllHref="/calls-for-papers"
         />
 
         <div className="grid gap-5 md:grid-cols-3">
