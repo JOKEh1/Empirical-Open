@@ -13,8 +13,6 @@ const navLinks = [
   { label: "Discussions", href: "/discussions" },
 ]
 
-const topLinks = ["For Institutions", "Host Your Journal", "Help"]
-
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
