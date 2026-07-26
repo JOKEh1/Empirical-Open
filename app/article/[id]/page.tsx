@@ -10,7 +10,6 @@ import {
   Calendar,
   BookOpen,
   Share2,
-  Download,
   Heart,
   MessageCircle,
 } from "lucide-react"
@@ -124,17 +123,7 @@ export default function ArticleReaderPage() {
                 </div>
               </section>
 
-              {/* Download section */}
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <button className="flex items-center justify-center gap-2 rounded-xs bg-gold px-5 py-3 font-semibold text-ink transition-colors hover:bg-gold-soft">
-                  <Download className="size-4" />
-                  Download PDF
-                </button>
-                <button className="flex items-center justify-center gap-2 rounded-xs border border-white/20 px-5 py-3 font-semibold text-paper-raised transition-colors hover:border-white/40">
-                  <BookOpen className="size-4" />
-                  Read HTML
-                </button>
-              </div>
+
             </div>
 
             {/* Sidebar */}
