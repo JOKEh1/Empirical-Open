@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
@@ -16,16 +16,48 @@ const navLinks = [
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
+  const menuRef = useRef<HTMLDivElement>(null)
   
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/"
     return pathname.startsWith(href)
   }
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (open && menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        const header = menuRef.current.closest('header')
+        if (header && !header.contains(event.target as Node)) {
+          setOpen(false)
+        }
+      }
+    }
+
+    if (open) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [open])
+
+  // Close menu when scrolling
+  useEffect(() => {
+    function handleScroll() {
+      if (open) {
+        setOpen(false)
+      }
+    }
+
+    if (open) {
+      window.addEventListener('scroll', handleScroll)
+      return () => window.removeEventListener('scroll', handleScroll)
+    }
+  }, [open])
+
   return (
     <div className="sticky top-0 z-40">
       {/* Main header */}
-      <header className="border-b border-white/10 bg-ink text-paper-raised">
+      <header ref={menuRef} className="border-b border-white/10 bg-ink text-paper-raised">
         <div className="mx-auto flex h-[76px] max-w-[1180px] items-center justify-between px-6 md:px-8">
           <Link href="/" className="flex items-center gap-2.5">
             <span
