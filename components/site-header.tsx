@@ -57,7 +57,7 @@ export function SiteHeader() {
   return (
     <div className="sticky top-0 z-40">
       {/* Main header */}
-      <header ref={menuRef} className="border-b border-white/10 bg-ink text-paper-raised">
+      <header ref={menuRef} className="relative border-b border-white/10 bg-ink text-paper-raised">
         <div className="mx-auto flex h-[76px] max-w-[1180px] items-center justify-between px-6 md:px-8">
           <Link href="/" className="flex items-center gap-2.5">
             <span
@@ -120,7 +120,7 @@ export function SiteHeader() {
 
         {/* Mobile menu */}
         {open && (
-          <div className="border-t border-white/10 bg-ink md:hidden">
+          <div className="absolute top-full left-0 right-0 z-50 border-t border-white/10 bg-ink md:hidden">
             <nav className="mx-auto flex max-w-[1180px] flex-col px-6 py-4">
               {navLinks.map((l) => {
                 const active = isActive(l.href)
