@@ -99,10 +99,10 @@ export default function ArticleReaderPage() {
             <div className="lg:col-span-2 space-y-6">
               {/* Abstract section */}
               <section>
-                <h2 className="mb-3 font-serif text-xl font-bold text-paper-raised">
+                <h2 className="mb-3 font-serif text-xl font-bold text-[#0f172a]">
                   Abstract
                 </h2>
-                <p className="leading-relaxed text-paper-raised/80">{article.abstract}</p>
+                <p className="leading-relaxed text-[#0f172a]">{article.abstract}</p>
               </section>
 
               {/* Article content placeholder */}
