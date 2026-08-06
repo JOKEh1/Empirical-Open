@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X } from "lucide-react"
+import { Menu, X, ArrowRight } from "lucide-react"
+import { isAuthenticated } from "@/lib/auth"
 
 const navLinks = [
   { label: "Discover", href: "/" },
@@ -15,8 +16,14 @@ const navLinks = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const pathname = usePathname()
   const menuRef = useRef<HTMLDivElement>(null)
+
+  // Check auth status on mount
+  useEffect(() => {
+    setIsLoggedIn(isAuthenticated())
+  }, [])
   
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/"
@@ -91,6 +98,15 @@ export function SiteHeader() {
                 </Link>
               )
             })}
+            {isLoggedIn && (
+              <Link
+                href="/submit"
+                className="flex items-center gap-2 rounded-md bg-[#c88d2d] px-4 py-2 font-semibold text-[#0f172a] transition-colors hover:bg-amber-500"
+              >
+                Submit an article
+                <ArrowRight className="size-4" />
+              </Link>
+            )}
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
@@ -137,6 +153,16 @@ export function SiteHeader() {
                   </Link>
                 )
               })}
+              {isLoggedIn && (
+                <Link
+                  href="/submit"
+                  className="flex items-center justify-center gap-2 border-b border-white/10 py-3 font-semibold text-[#0f172a] rounded-md bg-[#c88d2d] hover:bg-amber-500 transition-colors"
+                  onClick={() => setOpen(false)}
+                >
+                  Submit an article
+                  <ArrowRight className="size-4" />
+                </Link>
+              )}
               <div className="mt-4 flex flex-col gap-3">
                 <Link
                   href="/login"
