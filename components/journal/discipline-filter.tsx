@@ -16,8 +16,8 @@ export function DisciplineFilter({ selected, onSelect }: DisciplineFilterProps) 
           onClick={() => onSelect(d)}
           className={`rounded-xs px-3 py-1.5 text-sm font-medium transition-all ${
             selected === d
-              ? "bg-gold text-ink"
-              : "border border-white/20 text-paper-raised hover:border-white/40"
+              ? "bg-[#c98a2c] text-[#0f172a]"
+              : "border border-[#dad5c8] bg-white text-[#0f172a] hover:border-[#c98a2c]"
           }`}
         >
           {d}
