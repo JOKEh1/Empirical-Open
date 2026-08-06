@@ -9,7 +9,7 @@ import { SiteFooter } from "@/components/site-footer"
 
 export default function Page() {
   return (
-    <div className="min-h-screen bg-paper text-foreground">
+    <div className="min-h-screen bg-[#faf9f6] text-[#0f172a]">
       <SiteHeader />
       <main>
         <Hero />
