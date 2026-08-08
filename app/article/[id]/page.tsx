@@ -42,11 +42,11 @@ export default function ArticleReaderPage() {
         <div className="border-b border-white/10 bg-ink">
           <div className="mx-auto max-w-[900px] px-6 py-4 md:px-8">
             <Link
-              href="/journals"
+              href="/article"
               className="inline-flex items-center gap-2 text-sm text-gold hover:text-gold-soft transition-colors"
             >
               <ArrowLeft className="size-4" />
-              Back to journals
+              Back to Articles
             </Link>
           </div>
         </div>
