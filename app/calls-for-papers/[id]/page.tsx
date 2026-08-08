@@ -122,7 +122,7 @@ export default async function CFPDetailPage({ params }: { params: Promise<{ id: 
                       rel="noopener noreferrer"
                       className="flex items-center justify-center gap-2 rounded-xs bg-gold px-4 py-2.5 font-semibold text-ink transition-colors hover:bg-gold-soft"
                     >
-                      Submit via Journal OJS
+                      Submit
                       <ExternalLink className="size-4" />
                     </a>
                     <a
