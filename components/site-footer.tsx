@@ -2,11 +2,12 @@ import Link from "next/link"
 
 const columns = [
   {
-    heading: "Discover",
+    heading: "Explore",
     links: [
-      { label: "Search articles", href: "/" },
-      { label: "Browse journals", href: "/journals" },
-      { label: "Calls for papers", href: "/calls-for-papers" },
+      { label: "Browse Articles", href: "/article" },
+      { label: "Browse Journals", href: "/journals" },
+      { label: "Calls for Papers", href: "/calls" },
+      { label: "Announcements", href: "/announcements" },
     ],
   },
   {
@@ -22,15 +23,6 @@ const columns = [
     links: [
       { label: "EmpiricalOpen", href: "/about" },
       { label: "Contact", href: "/contact" },
-    ],
-  },
-  {
-    heading: "Explore",
-    links: [
-      { label: "Browse Articles", href: "/article" },
-      { label: "Browse Journals", href: "/journals" },
-      { label: "Calls for Papers", href: "/calls" },
-      { label: "Announcements", href: "/announcements" },
     ],
   },
 ]
