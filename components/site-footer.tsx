@@ -24,6 +24,15 @@ const columns = [
       { label: "Contact", href: "/contact" },
     ],
   },
+  {
+    heading: "Explore",
+    links: [
+      { label: "Browse Articles", href: "/article" },
+      { label: "Browse Journals", href: "/journals" },
+      { label: "Calls for Papers", href: "/calls" },
+      { label: "Announcements", href: "/announcements" },
+    ],
+  },
 ]
 
 export function SiteFooter() {
@@ -37,10 +46,10 @@ export function SiteFooter() {
                 <h3 className="mb-3.5 font-mono text-[11px] uppercase tracking-[0.08em] text-gold-soft">
                   {col.heading}
                 </h3>
-                <ul className="flex flex-col gap-2.5 text-[13px]">
+                <ul className="flex flex-col gap-2.5 text-[13px] text-white">
                   {col.links.map((l, i) => (
                     <li key={i}>
-                      <Link href={l.href} className="transition-colors hover:text-paper-raised">
+                      <Link href={l.href} className="text-white transition-colors hover:text-gold-soft">
                         {l.label}
                       </Link>
                     </li>
