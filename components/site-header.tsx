@@ -100,7 +100,7 @@ export function SiteHeader() {
             })}
             {isLoggedIn && (
               <Link
-                href="/submit"
+                href="/calls-for-papers"
                 className="flex items-center gap-2 rounded-md bg-[#c88d2d] px-4 py-2 font-semibold text-[#0f172a] transition-colors hover:bg-amber-500"
               >
                 Submit an article
@@ -155,7 +155,7 @@ export function SiteHeader() {
               })}
               {isLoggedIn && (
                 <Link
-                  href="/submit"
+                  href="/calls-for-papers"
                   className="flex items-center justify-center gap-2 border-b border-white/10 py-3 font-semibold text-[#0f172a] rounded-md bg-[#c88d2d] hover:bg-amber-500 transition-colors"
                   onClick={() => setOpen(false)}
                 >
