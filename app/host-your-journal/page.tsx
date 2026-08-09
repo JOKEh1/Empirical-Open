@@ -69,6 +69,46 @@ export default function HostYourJournalPage() {
     <>
       <SiteHeader />
       <main>
+        {/* Hero section */}
+        <section className="bg-background border-b border-line">
+          <div className="mx-auto max-w-[1180px] px-6 py-16 md:px-8 md:py-24">
+            <div className="max-w-3xl">
+              <h1 className="font-serif text-4xl font-bold text-gold md:text-5xl mb-6">
+                Host Your Journal with EmpiricalOpen
+              </h1>
+              <p className="text-lg text-text-soft leading-relaxed mb-8">
+                Give your university's research global visibility. Join the network of African publishers 
+                making peer-reviewed scholarship discoverable and accessible.
+              </p>
+              <button
+                onClick={() => setShowForm(!showForm)}
+                className="inline-flex items-center gap-2 rounded-xs bg-gold px-6 py-3 font-semibold text-ink transition-colors hover:bg-gold-soft"
+              >
+                Request Integration <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Benefits section */}
+        <section className="border-b border-line">
+          <div className="mx-auto max-w-[1180px] px-6 py-14 md:px-8 md:py-20">
+            <h2 className="font-serif text-2xl font-bold text-gold mb-12 text-center">Why Join EmpiricalOpen?</h2>
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {benefits.map((benefit) => {
+                const IconComponent = benefit.icon
+                return (
+                  <div key={benefit.title} className="rounded-xs border border-white/10 bg-paper p-6">
+                    <IconComponent className={`h-8 w-8 ${benefit.color} mb-3`} />
+                    <h3 className="font-semibold text-ink mb-2">{benefit.title}</h3>
+                    <p className="text-sm text-ink-soft">{benefit.description}</p>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+
         {/* How it works section */}
         <section className="border-b border-line">
           <div className="mx-auto max-w-[1180px] px-6 py-14 md:px-8 md:py-20">
@@ -211,46 +251,6 @@ export default function HostYourJournalPage() {
                   <p className="text-sm text-text-soft">{faq.a}</p>
                 </div>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Benefits section */}
-        <section className="border-b border-line">
-          <div className="mx-auto max-w-[1180px] px-6 py-14 md:px-8 md:py-20">
-            <h2 className="font-serif text-2xl font-bold text-gold mb-12 text-center">Why Join EmpiricalOpen?</h2>
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {benefits.map((benefit) => {
-                const IconComponent = benefit.icon
-                return (
-                  <div key={benefit.title} className="rounded-xs border border-white/10 bg-paper p-6">
-                    <IconComponent className={`h-8 w-8 ${benefit.color} mb-3`} />
-                    <h3 className="font-semibold text-ink mb-2">{benefit.title}</h3>
-                    <p className="text-sm text-ink-soft">{benefit.description}</p>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* Final call-to-action */}
-        <section className="bg-background border-b border-line">
-          <div className="mx-auto max-w-[1180px] px-6 py-16 md:px-8 md:py-24">
-            <div className="max-w-3xl">
-              <h1 className="font-serif text-4xl font-bold text-gold md:text-5xl mb-6">
-                Host Your Journal with EmpiricalOpen
-              </h1>
-              <p className="text-lg text-text-soft leading-relaxed mb-8">
-                Give your university&apos;s research global visibility. Join the network of African publishers
-                making peer-reviewed scholarship discoverable and accessible.
-              </p>
-              <button
-                onClick={() => setShowForm(!showForm)}
-                className="inline-flex items-center gap-2 rounded-xs bg-gold px-6 py-3 font-semibold text-ink transition-colors hover:bg-gold-soft"
-              >
-                Request Integration <ArrowRight className="h-4 w-4" />
-              </button>
             </div>
           </div>
         </section>
