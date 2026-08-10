@@ -8,6 +8,7 @@ __v0_jsx-dev-runtime.ts
 
 # Environment variables
 .env*.local
+PROJECT_PLAN.md
 
 # Common ignores
 node_modules
