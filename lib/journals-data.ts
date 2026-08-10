@@ -343,6 +343,19 @@ export const journalsDetail: JournalDetail[] = [
         views: 680,
         citations: 11,
       },
+      {
+        id: "article-012",
+        title: "Community-led restoration and climate resilience in highland watersheds",
+        authors: "Mwangi J., Wanjiru E., Kiplagat D., et al.",
+        abstract:
+          "A comparative study of community-led watershed restoration finds measurable gains in soil retention, water availability, and local climate adaptation capacity.",
+        publicationDate: "2026-06-22",
+        journal: "East African Journal of Environmental Studies",
+        journalId: "east-african-env",
+        discipline: "Environmental Studies",
+        views: 544,
+        citations: 9,
+      },
     ],
   },
 ]
