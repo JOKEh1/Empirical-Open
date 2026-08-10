@@ -42,11 +42,11 @@ export default function ArticleReaderPage() {
         <div className="border-b border-white/10 bg-ink">
           <div className="mx-auto max-w-[900px] px-6 py-4 md:px-8">
             <Link
-              href="/journals"
+              href="/article"
               className="inline-flex items-center gap-2 text-sm text-gold hover:text-gold-soft transition-colors"
             >
               <ArrowLeft className="size-4" />
-              Back to journals
+              Back to Articles
             </Link>
           </div>
         </div>
@@ -99,10 +99,10 @@ export default function ArticleReaderPage() {
             <div className="lg:col-span-2 space-y-6">
               {/* Abstract section */}
               <section>
-                <h2 className="mb-3 font-serif text-xl font-bold text-paper-raised">
+                <h2 className="mb-3 font-serif text-xl font-bold text-[#0f172a]">
                   Abstract
                 </h2>
-                <p className="leading-relaxed text-paper-raised/80">{article.abstract}</p>
+                <p className="leading-relaxed text-[#0f172a]">{article.abstract}</p>
               </section>
 
               {/* Article content placeholder */}

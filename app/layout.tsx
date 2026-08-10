@@ -60,9 +60,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable} bg-background`}
+      className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable} bg-[#faf9f6]`}
     >
-      <body className="font-sans antialiased">
+      <body className="font-sans antialiased bg-[#faf9f6] text-[#0f172a]">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

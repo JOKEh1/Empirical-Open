@@ -1,6 +1,6 @@
 'use client'
 
-import { X, ArrowRight, ExternalLink } from 'lucide-react'
+import { X, ExternalLink } from 'lucide-react'
 import type { JournalDetail } from '@/lib/journals-data'
 
 interface JournalDetailModalProps {
@@ -101,13 +101,6 @@ export function JournalDetailModal({ journal, onClose }: JournalDetailModalProps
           <a
             href="#"
             className="inline-flex items-center gap-1.5 rounded-xs bg-gold px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft"
-          >
-            Submit an article
-            <ArrowRight className="size-4" />
-          </a>
-          <a
-            href="#"
-            className="inline-flex items-center gap-1.5 rounded-xs border border-line px-4 py-2.5 text-sm font-medium text-ink transition-colors hover:border-ink"
           >
             Visit journal site
             <ExternalLink className="size-4" />
