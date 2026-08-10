@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { LayoutDashboard, BookOpen, FileText, Home, LogOut } from 'lucide-react'
+import { signOut } from '@/lib/auth'
 
 const adminNav = [
   { label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -12,6 +13,13 @@ const adminNav = [
 
 export function AdminSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+
+  async function handleSignOut() {
+    await signOut()
+    router.push('/')
+    router.refresh()
+  }
 
   return (
     <div className="flex h-screen flex-col border-r border-white/10 bg-ink w-56">
@@ -44,7 +52,7 @@ export function AdminSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-white/10 px-3 py-4">
+      <div className="border-t border-white/10 px-3 py-4 space-y-1">
         <Link
           href="/"
           className="flex items-center gap-3 rounded-xs px-3 py-2.5 text-sm text-text-soft transition-colors hover:bg-white/5 hover:text-slate-100"
@@ -52,6 +60,13 @@ export function AdminSidebar() {
           <Home className="size-5" />
           Back to Hub
         </Link>
+        <button
+          onClick={handleSignOut}
+          className="flex w-full items-center gap-3 rounded-xs px-3 py-2.5 text-sm text-rust transition-colors hover:bg-rust/10"
+        >
+          <LogOut className="size-5" />
+          Sign Out
+        </button>
       </div>
     </div>
   )
