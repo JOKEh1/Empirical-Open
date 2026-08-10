@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Bookmark, Settings, Mail, Lock, LogOut, Heart } from 'lucide-react'
-import { getCurrentUser } from '@/lib/auth'
+import { useRouter } from 'next/navigation'
+import { getCurrentUser, signOut, updatePassword, updateEmail, updateProfileName, type User } from '@/lib/auth'
 
 // Mock saved articles data
 const mockSavedArticles = [
@@ -30,25 +31,73 @@ const mockSavedArticles = [
 ]
 
 export default function UserDashboard() {
-  const user = getCurrentUser()
+  const router = useRouter()
+  const [user, setUser] = useState<User | null>(null)
   const [activeTab, setActiveTab] = useState<'bookmarks' | 'settings'>('bookmarks')
-  const [email, setEmail] = useState(user?.email || '')
-  const [name, setName] = useState(user?.name || '')
+  const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
+  const [profileNotice, setProfileNotice] = useState<string | null>(null)
+  const [passwordNotice, setPasswordNotice] = useState<string | null>(null)
+
+  useEffect(() => {
+    // UX guard only; middleware.ts enforces this server-side.
+    let cancelled = false
+    getCurrentUser().then((u) => {
+      if (cancelled) return
+      if (!u) {
+        router.push('/login?redirect=/user/dashboard')
+        return
+      }
+      setUser(u)
+      setEmail(u.email)
+      setName(u.name)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [router])
   const [showPasswordForm, setShowPasswordForm] = useState(false)
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
-  const handlePasswordChange = (e: React.FormEvent) => {
+  const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (newPassword === confirmPassword && newPassword.length >= 8) {
-      // In a real app, this would send to the backend
-      alert('Password updated successfully!')
-      setCurrentPassword('')
-      setNewPassword('')
-      setConfirmPassword('')
-      setShowPasswordForm(false)
+    setPasswordNotice(null)
+    if (newPassword !== confirmPassword || newPassword.length < 8) {
+      setPasswordNotice('Passwords must match and be at least 8 characters.')
+      return
     }
+    const { error } = await updatePassword(newPassword)
+    if (error) {
+      setPasswordNotice(error)
+      return
+    }
+    setPasswordNotice('Password updated successfully.')
+    setCurrentPassword('')
+    setNewPassword('')
+    setConfirmPassword('')
+    setShowPasswordForm(false)
+  }
+
+  const handleProfileSave = async () => {
+    setProfileNotice(null)
+    const messages: string[] = []
+    if (user && name.trim() && name.trim() !== user.name) {
+      const { error } = await updateProfileName(user.id, name.trim())
+      messages.push(error ? `Name: ${error}` : 'Name updated.')
+    }
+    if (user && email.trim() && email.trim() !== user.email) {
+      const { error } = await updateEmail(email.trim())
+      messages.push(error ? `Email: ${error}` : 'Confirmation sent to your new email address.')
+    }
+    setProfileNotice(messages.length ? messages.join(' ') : 'Nothing to update.')
+  }
+
+  const handleSignOut = async () => {
+    await signOut()
+    router.push('/')
+    router.refresh()
   }
 
   return (
@@ -206,8 +255,12 @@ export default function UserDashboard() {
                   />
                 </div>
 
+                {profileNotice && (
+                  <p className="text-sm text-gold-soft">{profileNotice}</p>
+                )}
                 <button
                   type="button"
+                  onClick={handleProfileSave}
                   className="rounded-xs bg-gold px-6 py-2.5 font-semibold text-ink hover:bg-gold-soft transition-colors"
                 >
                   Save Changes
@@ -222,6 +275,9 @@ export default function UserDashboard() {
                 Password
               </h3>
 
+              {passwordNotice && (
+                <p className="mb-4 text-sm text-gold-soft">{passwordNotice}</p>
+              )}
               {!showPasswordForm ? (
                 <button
                   onClick={() => setShowPasswordForm(true)}
@@ -292,7 +348,10 @@ export default function UserDashboard() {
                 Sign Out
               </h3>
               <p className="text-sm text-text-soft mb-4">Sign out from your account on this device</p>
-              <button className="rounded-xs border border-rust/50 px-6 py-2.5 font-medium text-rust hover:bg-rust/10 transition-colors">
+              <button
+                onClick={handleSignOut}
+                className="rounded-xs border border-rust/50 px-6 py-2.5 font-medium text-rust hover:bg-rust/10 transition-colors"
+              >
                 Sign Out
               </button>
             </div>

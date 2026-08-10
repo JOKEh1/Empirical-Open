@@ -5,21 +5,26 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 import { BarChart3, Users, BookOpen, FileText, TrendingUp } from 'lucide-react'
-import { isAuthenticated, isAdmin } from '@/lib/auth'
+import { getCurrentUser } from '@/lib/auth'
 
 export default function AdminDashboard() {
   const router = useRouter()
 
   useEffect(() => {
-    // Check if user is authenticated and is admin
-    if (!isAuthenticated()) {
-      // Redirect to login with redirect parameter
-      router.push('/login?redirect=/admin/dashboard')
-    } else if (!isAdmin()) {
-      // If authenticated but not admin, redirect to home
-      router.push('/')
+    // UX guard only; middleware.ts enforces this server-side.
+    let cancelled = false
+    getCurrentUser().then((user) => {
+      if (cancelled) return
+      if (!user) {
+        router.push('/login?redirect=/admin/dashboard')
+      } else if (user.role !== 'admin') {
+        router.push('/')
+      }
+    })
+    return () => {
+      cancelled = true
     }
-  }, [])
+  }, [router])
   const stats = [
     {
       label: 'Total Journals',

@@ -1,8 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-// Refreshes the Supabase auth session on every request.
-// Route protection (e.g. /admin) will be added here in the auth phase.
+// Refreshes the Supabase auth session on every request and enforces
+// server-side route protection. Client-side guards are UX only —
+// this (plus RLS) is the real gate.
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -28,7 +29,33 @@ export async function middleware(request: NextRequest) {
   )
 
   // IMPORTANT: do not remove — keeps the session alive.
-  await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const path = request.nextUrl.pathname
+  const needsAuth = path.startsWith('/admin') || path.startsWith('/user')
+
+  if (needsAuth && !user) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    url.search = `?redirect=${encodeURIComponent(path)}`
+    return NextResponse.redirect(url)
+  }
+
+  if (path.startsWith('/admin') && user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+    if (profile?.role !== 'admin') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/'
+      url.search = ''
+      return NextResponse.redirect(url)
+    }
+  }
 
   return supabaseResponse
 }

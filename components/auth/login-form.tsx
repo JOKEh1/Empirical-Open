@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Lock, LogIn, Mail } from 'lucide-react'
 import { AuthField } from '@/components/auth/auth-field'
-import { setCurrentUser } from '@/lib/auth'
+import { signIn } from '@/lib/auth'
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -19,35 +19,29 @@ export function LoginForm() {
   const [remember, setRemember] = useState(true)
   const [touched, setTouched] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [pending, setPending] = useState(false)
+  const [authError, setAuthError] = useState<string | null>(null)
 
   const emailError = touched && !emailPattern.test(email) ? 'Enter a valid email address.' : ''
   const passwordError = touched && password.length < 1 ? 'Password is required.' : ''
 
-  useEffect(() => {
-    if (submitted) {
-      const timer = setTimeout(() => {
-        // Simulate successful login - set user as admin for demo
-        setCurrentUser({
-          id: 'user-001',
-          email: email,
-          role: 'admin',
-          name: email.split('@')[0],
-        })
-
-        // Redirect to the intended page or dashboard
-        router.push(redirectTo)
-      }, 1500)
-
-      return () => clearTimeout(timer)
-    }
-  }, [submitted, redirectTo, router, email])
-
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setTouched(true)
-    if (emailPattern.test(email) && password.length >= 1) {
-      setSubmitted(true)
+    setAuthError(null)
+    if (!emailPattern.test(email) || password.length < 1 || pending) return
+
+    setPending(true)
+    const { error } = await signIn(email, password)
+    setPending(false)
+
+    if (error) {
+      setAuthError(error)
+      return
     }
+    setSubmitted(true)
+    router.push(redirectTo)
+    router.refresh()
   }
 
   return (
@@ -55,6 +49,11 @@ export function LoginForm() {
       {submitted && (
         <p className="rounded-xs border border-jade/40 bg-jade/10 px-3 py-2.5 text-sm text-jade-soft">
           Signed in successfully. Redirecting to your hub…
+        </p>
+      )}
+      {authError && (
+        <p className="rounded-xs border border-rust/40 bg-rust/10 px-3 py-2.5 text-sm text-rust">
+          {authError}
         </p>
       )}
 
@@ -106,10 +105,11 @@ export function LoginForm() {
 
       <button
         type="submit"
-        className="mt-1 inline-flex items-center justify-center gap-2 rounded-xs bg-gold px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft"
+        disabled={pending}
+        className="mt-1 inline-flex items-center justify-center gap-2 rounded-xs bg-gold px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft disabled:cursor-not-allowed disabled:opacity-60"
       >
         <LogIn className="size-4" />
-        Sign in
+        {pending ? 'Signing in…' : 'Sign in'}
       </button>
     </form>
   )

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 import { Plus, Calendar, Edit2, Trash2, X } from 'lucide-react'
-import { isAuthenticated, isAdmin } from '@/lib/auth'
+import { getCurrentUser } from '@/lib/auth'
 
 const disciplines = [
   'Agricultural Sciences',
@@ -63,12 +63,20 @@ export default function CallsManager() {
   })
 
   useEffect(() => {
-    if (!isAuthenticated()) {
-      router.push('/login?redirect=/admin/calls')
-    } else if (!isAdmin()) {
-      router.push('/')
+    // UX guard only; middleware.ts enforces this server-side.
+    let cancelled = false
+    getCurrentUser().then((user) => {
+      if (cancelled) return
+      if (!user) {
+        router.push('/login?redirect=/admin/calls')
+      } else if (user.role !== 'admin') {
+        router.push('/')
+      }
+    })
+    return () => {
+      cancelled = true
     }
-  }, [])
+  }, [router])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

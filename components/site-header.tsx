@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu, X, ArrowRight } from "lucide-react"
-import { isAuthenticated } from "@/lib/auth"
+import { isAuthenticated, onAuthChange } from "@/lib/auth"
 
 const navLinks = [
   { label: "Discover", href: "/" },
@@ -20,9 +20,17 @@ export function SiteHeader() {
   const pathname = usePathname()
   const menuRef = useRef<HTMLDivElement>(null)
 
-  // Check auth status on mount
+  // Check auth status on mount and stay in sync with sign-in/out
   useEffect(() => {
-    setIsLoggedIn(isAuthenticated())
+    let cancelled = false
+    isAuthenticated().then((ok) => {
+      if (!cancelled) setIsLoggedIn(ok)
+    })
+    const unsubscribe = onAuthChange((loggedIn) => setIsLoggedIn(loggedIn))
+    return () => {
+      cancelled = true
+      unsubscribe()
+    }
   }, [])
   
   const isActive = (href: string) => {

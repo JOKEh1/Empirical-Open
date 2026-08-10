@@ -5,6 +5,7 @@ import Link from "next/link"
 import { ArrowLeft, MailCheck, Mail, Send } from "lucide-react"
 import { AuthShell } from "@/components/auth/auth-shell"
 import { AuthField } from "@/components/auth/auth-field"
+import { requestPasswordReset } from "@/lib/auth"
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -12,15 +13,26 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
   const [touched, setTouched] = useState(false)
   const [sent, setSent] = useState(false)
+  const [pending, setPending] = useState(false)
+  const [authError, setAuthError] = useState<string | null>(null)
 
   const emailError = touched && !emailPattern.test(email) ? "Enter a valid email address." : ""
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setTouched(true)
-    if (emailPattern.test(email)) {
-      setSent(true)
+    setAuthError(null)
+    if (!emailPattern.test(email) || pending) return
+
+    setPending(true)
+    const { error } = await requestPasswordReset(email)
+    setPending(false)
+
+    if (error) {
+      setAuthError(error)
+      return
     }
+    setSent(true)
   }
 
   return (
@@ -64,6 +76,11 @@ export default function ForgotPasswordPage() {
         </div>
       ) : (
         <form className="flex flex-col gap-5" onSubmit={handleSubmit} noValidate>
+          {authError && (
+            <p className="rounded-xs border border-rust/40 bg-rust/10 px-3 py-2.5 text-sm text-rust">
+              {authError}
+            </p>
+          )}
           <AuthField
             id="email"
             label="Email address"
@@ -83,7 +100,7 @@ export default function ForgotPasswordPage() {
             className="mt-1 inline-flex items-center justify-center gap-2 rounded-xs bg-gold px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft"
           >
             <Send className="size-4" />
-            Send reset link
+            {pending ? "Sending\u2026" : "Send reset link"}
           </button>
         </form>
       )}

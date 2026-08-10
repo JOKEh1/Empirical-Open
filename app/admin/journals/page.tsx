@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 import { Plus, CheckCircle, AlertCircle, Clock, Trash2, RefreshCw, Settings, PauseCircle } from 'lucide-react'
-import { isAuthenticated, isAdmin } from '@/lib/auth'
+import { getCurrentUser } from '@/lib/auth'
 
 type JournalStatus = 'active' | 'pending' | 'paused'
 
@@ -71,12 +71,20 @@ export default function JournalRegistry() {
   const [syncingId, setSyncingId] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isAuthenticated()) {
-      router.push('/login?redirect=/admin/journals')
-    } else if (!isAdmin()) {
-      router.push('/')
+    // UX guard only; middleware.ts enforces this server-side.
+    let cancelled = false
+    getCurrentUser().then((user) => {
+      if (cancelled) return
+      if (!user) {
+        router.push('/login?redirect=/admin/journals')
+      } else if (user.role !== 'admin') {
+        router.push('/')
+      }
+    })
+    return () => {
+      cancelled = true
     }
-  }, [])
+  }, [router])
   const [formData, setFormData] = useState({
     name: '',
     oaiEndpoint: '',
