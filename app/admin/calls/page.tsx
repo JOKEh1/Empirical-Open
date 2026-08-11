@@ -106,12 +106,12 @@ export default function CallsManager() {
       case 'draft':
         return 'bg-gold/10 text-gold'
       default:
-        return 'bg-text-soft/10 text-text-soft'
+        return 'bg-text-soft/10 text-slate-600'
     }
   }
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-[#faf9f6]">
       <AdminSidebar />
 
       <main className="flex-1 overflow-auto">
@@ -119,10 +119,10 @@ export default function CallsManager() {
           {/* Header */}
           <div className="mb-10 flex items-center justify-between">
             <div>
-              <h1 className="font-serif text-3xl font-semibold text-paper mb-2">
+              <h1 className="font-serif text-3xl font-semibold text-[#0f172a] mb-2">
                 Calls for Papers Manager
               </h1>
-              <p className="text-text-soft">
+              <p className="text-slate-600">
                 Create and manage special issues and calls for papers
               </p>
             </div>
@@ -137,12 +137,12 @@ export default function CallsManager() {
 
           {/* New Call Form */}
           {showForm && (
-            <div className="mb-10 rounded-xs border border-white/10 bg-paper-raised/50 p-8">
+            <div className="mb-10 rounded-xs border border-slate-200 bg-white p-8">
               <div className="mb-6 flex items-center justify-between">
-                <h2 className="font-serif text-xl font-semibold text-paper">New Special Issue</h2>
+                <h2 className="font-serif text-xl font-semibold text-[#0f172a]">New Special Issue</h2>
                 <button
                   onClick={() => setShowForm(false)}
-                  className="text-text-soft hover:text-paper"
+                  className="text-slate-600 hover:text-[#0f172a]"
                 >
                   <X className="size-5" />
                 </button>
@@ -151,7 +151,7 @@ export default function CallsManager() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid gap-6 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-paper mb-2">
+                    <label className="block text-sm font-medium text-[#0f172a] mb-2">
                       Special Issue Title
                     </label>
                     <input
@@ -159,18 +159,18 @@ export default function CallsManager() {
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       placeholder="e.g., Climate Change in West Africa"
-                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
+                      className="w-full rounded-xs border border-slate-200 bg-white px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-paper mb-2">
+                    <label className="block text-sm font-medium text-[#0f172a] mb-2">
                       Target Journal
                     </label>
                     <select
                       value={formData.journal}
                       onChange={(e) => setFormData({ ...formData, journal: e.target.value })}
-                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 focus:border-gold focus:outline-none"
+                      className="w-full rounded-xs border border-slate-200 bg-white px-4 py-2.5 text-slate-900 focus:border-gold focus:outline-none"
                       required
                     >
                       <option value="">Select a journal...</option>
@@ -188,7 +188,7 @@ export default function CallsManager() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-paper mb-2">
+                  <label className="block text-sm font-medium text-[#0f172a] mb-2">
                     Call Scope & Description
                   </label>
                   <textarea
@@ -196,13 +196,13 @@ export default function CallsManager() {
                     onChange={(e) => setFormData({ ...formData, scope: e.target.value })}
                     placeholder="Describe the scope, themes, and topics for this special issue..."
                     rows={5}
-                    className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
+                    className="w-full rounded-xs border border-slate-200 bg-white px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-paper mb-3">
+                  <label className="block text-sm font-medium text-[#0f172a] mb-3">
                     Relevant Disciplines
                   </label>
                   <div className="grid gap-2 md:grid-cols-2">
@@ -214,14 +214,14 @@ export default function CallsManager() {
                           onChange={() => toggleDiscipline(discipline)}
                           className="rounded border-white/20"
                         />
-                        <span className="text-sm text-paper">{discipline}</span>
+                        <span className="text-sm text-[#0f172a]">{discipline}</span>
                       </label>
                     ))}
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-paper mb-2">
+                  <label className="block text-sm font-medium text-[#0f172a] mb-2">
                     Submission Deadline
                   </label>
                   <div className="flex items-center gap-3">
@@ -230,7 +230,7 @@ export default function CallsManager() {
                       type="date"
                       value={formData.deadline}
                       onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
-                      className="flex-1 rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-paper focus:border-gold focus:outline-none"
+                      className="flex-1 rounded-xs border border-slate-200 bg-white px-4 py-2.5 text-[#0f172a] focus:border-gold focus:outline-none"
                       required
                     />
                   </div>
@@ -246,7 +246,7 @@ export default function CallsManager() {
                   <button
                     type="button"
                     onClick={() => setShowForm(false)}
-                    className="rounded-xs border border-white/10 px-6 py-2.5 font-medium text-paper transition-colors hover:bg-white/5"
+                    className="rounded-xs border border-slate-200 px-6 py-2.5 font-medium text-[#0f172a] transition-colors hover:bg-white/5"
                   >
                     Cancel
                   </button>
@@ -264,14 +264,14 @@ export default function CallsManager() {
               return (
                 <div
                   key={call.id}
-                  className="rounded-xs border border-white/10 bg-paper-raised/50 p-6"
+                  className="rounded-xs border border-slate-200 bg-white p-6"
                 >
                   <div className="mb-4 flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-serif text-lg font-semibold text-paper mb-1">
+                      <h3 className="font-serif text-lg font-semibold text-[#0f172a] mb-1">
                         {call.title}
                       </h3>
-                      <p className="text-sm text-text-soft mb-2">{call.journal}</p>
+                      <p className="text-sm text-slate-600 mb-2">{call.journal}</p>
                       <p className="text-sm leading-relaxed text-slate-100 line-clamp-2">
                         {call.scope}
                       </p>
@@ -293,7 +293,7 @@ export default function CallsManager() {
                   </div>
 
                   <div className="mb-4 flex items-center gap-6 text-sm">
-                    <div className="flex items-center gap-2 text-text-soft">
+                    <div className="flex items-center gap-2 text-slate-600">
                       <Calendar className="size-4" />
                       <span>
                         Deadline: {new Date(call.deadline).toLocaleDateString()} ({daysUntilDeadline} days)
@@ -302,7 +302,7 @@ export default function CallsManager() {
                   </div>
 
                   <div className="flex gap-3 pt-4">
-                    <button className="flex items-center gap-2 flex-1 rounded-xs border border-white/10 px-4 py-2 text-sm font-medium text-paper transition-colors hover:bg-white/5">
+                    <button className="flex items-center gap-2 flex-1 rounded-xs border border-slate-200 px-4 py-2 text-sm font-medium text-[#0f172a] transition-colors hover:bg-white/5">
                       <Edit2 className="size-4" />
                       Edit
                     </button>

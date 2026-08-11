@@ -128,7 +128,7 @@ export default function JournalRegistry() {
   }
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-[#faf9f6]">
       <AdminSidebar />
 
       <main className="flex-1 overflow-auto">
@@ -136,10 +136,10 @@ export default function JournalRegistry() {
           {/* Header */}
           <div className="mb-10 flex items-center justify-between">
             <div>
-              <h1 className="font-serif text-3xl font-semibold text-paper mb-2">
+              <h1 className="font-serif text-3xl font-semibold text-[#0f172a] mb-2">
                 Journal Registry
               </h1>
-              <p className="text-text-soft">
+              <p className="text-slate-600">
                 Register OJS journals with OAI-PMH endpoints and health monitoring
               </p>
             </div>
@@ -154,12 +154,12 @@ export default function JournalRegistry() {
 
           {/* Registration Form */}
           {showForm && (
-            <div className="mb-10 rounded-xs border border-white/10 bg-paper-raised/50 p-8">
-              <h2 className="font-serif text-xl font-semibold text-paper mb-6">New Journal Registration</h2>
+            <div className="mb-10 rounded-xs border border-slate-200 bg-white p-8">
+              <h2 className="font-serif text-xl font-semibold text-[#0f172a] mb-6">New Journal Registration</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid gap-6 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-paper mb-2">
+                    <label className="block text-sm font-medium text-[#0f172a] mb-2">
                       Journal Name
                     </label>
                     <input
@@ -167,12 +167,12 @@ export default function JournalRegistry() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="Full journal title"
-                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
+                      className="w-full rounded-xs border border-slate-200 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-paper mb-2">
+                    <label className="block text-sm font-medium text-[#0f172a] mb-2">
                       Host Institution
                     </label>
                     <input
@@ -180,14 +180,14 @@ export default function JournalRegistry() {
                       value={formData.institution}
                       onChange={(e) => setFormData({ ...formData, institution: e.target.value })}
                       placeholder="University or organization"
-                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
+                      className="w-full rounded-xs border border-slate-200 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-paper mb-2">
+                  <label className="block text-sm font-medium text-[#0f172a] mb-2">
                     OAI-PMH Endpoint URL
                   </label>
                   <input
@@ -195,17 +195,17 @@ export default function JournalRegistry() {
                     value={formData.oaiEndpoint}
                     onChange={(e) => setFormData({ ...formData, oaiEndpoint: e.target.value })}
                     placeholder="https://example.org/oai"
-                    className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
+                    className="w-full rounded-xs border border-slate-200 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                     required
                   />
-                  <p className="text-xs text-text-soft mt-1">
+                  <p className="text-xs text-slate-600 mt-1">
                     OAI-PMH endpoint for harvesting article metadata
                   </p>
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-paper mb-2">
+                    <label className="block text-sm font-medium text-[#0f172a] mb-2">
                       Journal Homepage URL
                     </label>
                     <input
@@ -213,12 +213,12 @@ export default function JournalRegistry() {
                       value={formData.homepage}
                       onChange={(e) => setFormData({ ...formData, homepage: e.target.value })}
                       placeholder="https://journal.example.org"
-                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
+                      className="w-full rounded-xs border border-slate-200 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-paper mb-2">
+                    <label className="block text-sm font-medium text-[#0f172a] mb-2">
                       Submission URL (OJS)
                     </label>
                     <input
@@ -226,7 +226,7 @@ export default function JournalRegistry() {
                       value={formData.submissionUrl}
                       onChange={(e) => setFormData({ ...formData, submissionUrl: e.target.value })}
                       placeholder="https://ojs.example.org/submit"
-                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
+                      className="w-full rounded-xs border border-slate-200 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                       required
                     />
                   </div>
@@ -242,7 +242,7 @@ export default function JournalRegistry() {
                   <button
                     type="button"
                     onClick={() => setShowForm(false)}
-                    className="rounded-xs border border-white/10 px-6 py-2.5 font-medium text-paper transition-colors hover:bg-white/5"
+                    className="rounded-xs border border-slate-200 px-6 py-2.5 font-medium text-[#0f172a] transition-colors hover:bg-white/5"
                   >
                     Cancel
                   </button>
@@ -267,15 +267,15 @@ export default function JournalRegistry() {
               return (
                 <div
                   key={journal.id}
-                  className="rounded-xs border border-white/10 bg-paper-raised/50 overflow-hidden transition-all"
+                  className="rounded-xs border border-slate-200 bg-white overflow-hidden transition-all"
                 >
                   <div className="p-6">
                     <div className="mb-4 flex items-start justify-between">
                       <div className="flex-1">
-                        <h3 className="font-serif text-lg font-semibold text-paper mb-1">
+                        <h3 className="font-serif text-lg font-semibold text-[#0f172a] mb-1">
                           {journal.name}
                         </h3>
-                        <p className="text-sm text-text-soft">{journal.institution}</p>
+                        <p className="text-sm text-slate-600">{journal.institution}</p>
                       </div>
                       <div className={`flex items-center gap-2 rounded-xs px-3 py-1.5 text-sm font-medium ${statusInfo.bg}`}>
                         <StatusIcon className={`size-4 ${statusInfo.color}`} />
@@ -285,13 +285,13 @@ export default function JournalRegistry() {
 
                     <div className="mb-4 grid gap-4 md:grid-cols-3 text-sm">
                       <div>
-                        <p className="text-xs text-text-soft mb-1">OAI-PMH Endpoint</p>
-                        <p className="text-paper break-all font-mono text-xs">
+                        <p className="text-xs text-slate-600 mb-1">OAI-PMH Endpoint</p>
+                        <p className="text-[#0f172a] break-all font-mono text-xs">
                           {journal.oaiEndpoint}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-text-soft mb-1">Homepage</p>
+                        <p className="text-xs text-slate-600 mb-1">Homepage</p>
                         <a
                           href={journal.homepage}
                           target="_blank"
@@ -302,15 +302,15 @@ export default function JournalRegistry() {
                         </a>
                       </div>
                       <div>
-                        <p className="text-xs text-text-soft mb-1">Health Status</p>
-                        <p className="text-paper text-xs">Last checked: {journal.lastHealthCheck}</p>
+                        <p className="text-xs text-slate-600 mb-1">Health Status</p>
+                        <p className="text-[#0f172a] text-xs">Last checked: {journal.lastHealthCheck}</p>
                       </div>
                     </div>
 
                     <div className="flex gap-3 pt-4">
                       <button
                         onClick={() => setExpandedJournal(isExpanded ? null : journal.id)}
-                        className="flex-1 rounded-xs border border-white/10 px-4 py-2 text-sm font-medium text-paper transition-colors hover:bg-white/5"
+                        className="flex-1 rounded-xs border border-slate-200 px-4 py-2 text-sm font-medium text-[#0f172a] transition-colors hover:bg-white/5"
                       >
                         {isExpanded ? 'Hide Details' : 'View Details'}
                       </button>
@@ -325,39 +325,39 @@ export default function JournalRegistry() {
 
                   {/* Expandable Details Panel */}
                   {isExpanded && (
-                    <div className="border-t border-white/10 bg-ink px-6 py-6 animate-in fade-in-0 slide-in-from-top-2 duration-300">
+                    <div className="border-t border-slate-200 bg-ink px-6 py-6 animate-in fade-in-0 slide-in-from-top-2 duration-300">
                       <div className="space-y-6">
                         {/* OAI-PMH Sync Health Section */}
                         <div>
-                          <h4 className="font-semibold text-paper mb-4 text-sm">OAI-PMH Sync Health</h4>
+                          <h4 className="font-semibold text-[#0f172a] mb-4 text-sm">OAI-PMH Sync Health</h4>
                           <div className="grid gap-4 md:grid-cols-4 text-sm">
-                            <div className="rounded-xs border border-white/10 bg-paper-raised/50 p-4">
-                              <p className="text-xs text-text-soft mb-2">Total Articles Harvested</p>
-                              <p className="font-semibold text-paper">{journal.articlesHarvested || 0}</p>
+                            <div className="rounded-xs border border-slate-200 bg-white p-4">
+                              <p className="text-xs text-slate-600 mb-2">Total Articles Harvested</p>
+                              <p className="font-semibold text-[#0f172a]">{journal.articlesHarvested || 0}</p>
                             </div>
-                            <div className="rounded-xs border border-white/10 bg-paper-raised/50 p-4">
-                              <p className="text-xs text-text-soft mb-2">Last Sync Status</p>
+                            <div className="rounded-xs border border-slate-200 bg-white p-4">
+                              <p className="text-xs text-slate-600 mb-2">Last Sync Status</p>
                               <p className={`font-semibold capitalize ${syncStatusColor}`}>
                                 {journal.lastSyncStatus || 'Pending'}
                               </p>
                             </div>
-                            <div className="rounded-xs border border-white/10 bg-paper-raised/50 p-4">
-                              <p className="text-xs text-text-soft mb-2">Platform Version</p>
-                              <p className="font-mono text-xs text-paper">{journal.platformVersion}</p>
+                            <div className="rounded-xs border border-slate-200 bg-white p-4">
+                              <p className="text-xs text-slate-600 mb-2">Platform Version</p>
+                              <p className="font-mono text-xs text-[#0f172a]">{journal.platformVersion}</p>
                             </div>
-                            <div className="rounded-xs border border-white/10 bg-paper-raised/50 p-4">
-                              <p className="text-xs text-text-soft mb-2">Metadata Format</p>
-                              <p className="font-mono text-xs text-paper">{journal.metadataFormat}</p>
+                            <div className="rounded-xs border border-slate-200 bg-white p-4">
+                              <p className="text-xs text-slate-600 mb-2">Metadata Format</p>
+                              <p className="font-mono text-xs text-[#0f172a]">{journal.metadataFormat}</p>
                             </div>
                           </div>
                         </div>
 
                         {/* Contact Information */}
                         <div>
-                          <h4 className="font-semibold text-paper mb-3 text-sm">Primary Contact</h4>
-                          <div className="rounded-xs border border-white/10 bg-paper-raised/50 p-4">
-                            <p className="text-sm text-paper">
-                              <span className="text-text-soft">Email: </span>
+                          <h4 className="font-semibold text-[#0f172a] mb-3 text-sm">Primary Contact</h4>
+                          <div className="rounded-xs border border-slate-200 bg-white p-4">
+                            <p className="text-sm text-[#0f172a]">
+                              <span className="text-slate-600">Email: </span>
                               <a href={`mailto:${journal.contactEmail}`} className="text-gold hover:underline">
                                 {journal.contactEmail}
                               </a>
@@ -367,7 +367,7 @@ export default function JournalRegistry() {
 
                         {/* Action Buttons */}
                         <div>
-                          <h4 className="font-semibold text-paper mb-3 text-sm">Actions</h4>
+                          <h4 className="font-semibold text-[#0f172a] mb-3 text-sm">Actions</h4>
                           <div className="flex flex-wrap gap-3">
                             <button
                               onClick={() => handleManualSync(journal.id)}
