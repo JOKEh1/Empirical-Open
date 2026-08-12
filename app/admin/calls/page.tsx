@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
+import { AdminLoading } from '@/components/admin/admin-loading'
 import { Plus, Calendar, Edit2, Trash2, X, CheckCircle, PauseCircle, PlayCircle } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/client'
@@ -187,7 +188,7 @@ export default function CallsManager() {
     setPendingId(null)
   }
 
-  if (!ready) return null
+  if (!ready) return <AdminLoading />
 
   return (
     <div className="flex h-screen bg-background">

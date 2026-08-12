@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
+import { AdminLoading } from '@/components/admin/admin-loading'
 import { Search, ShieldCheck, ShieldOff, User as UserIcon } from 'lucide-react'
 import { getCurrentUser, type User } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/client'
@@ -89,7 +90,7 @@ export default function AdminUsersPage() {
     return u.email.toLowerCase().includes(q) || u.name.toLowerCase().includes(q)
   })
 
-  if (!ready) return null
+  if (!ready) return <AdminLoading />
 
   return (
     <div className="flex h-screen bg-background">

@@ -35,7 +35,7 @@ export default function ContactPage() {
 
     setSubmitting(false)
     if (insertError) {
-      setError("Something went wrong sending your message. Please try again.")
+      setError(insertError.message || "Something went wrong sending your message. Please try again.")
       return
     }
 

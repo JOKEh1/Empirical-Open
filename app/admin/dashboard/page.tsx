@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
+import { AdminLoading } from '@/components/admin/admin-loading'
 import { AnnouncementsManager } from '@/components/admin/announcements-manager'
 import { BookOpen, Users, FileText, TrendingUp } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
@@ -65,7 +66,7 @@ export default function AdminDashboard() {
     }
   }, [router, loadData])
 
-  if (!ready) return null
+  if (!ready) return <AdminLoading />
 
   const syncHealthLabel =
     stats && stats.syncableJournals > 0

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
+import { AdminLoading } from '@/components/admin/admin-loading'
 import {
   CheckCircle,
   XCircle,
@@ -182,7 +183,7 @@ export default function JournalRegistry() {
     else await loadData()
   }
 
-  if (!ready) return null
+  if (!ready) return <AdminLoading />
 
   return (
     <div className="flex h-screen bg-background">
