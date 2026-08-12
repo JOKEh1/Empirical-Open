@@ -11,6 +11,7 @@ export type AvatarColor = 'jade' | 'gold' | 'rust'
 export type JournalStatus = 'active' | 'archived'
 export type CfpStatus = 'open' | 'closed' | 'draft'
 export type RequestStatus = 'pending' | 'approved' | 'rejected'
+export type SyncStatus = 'successful' | 'failed' | 'pending'
 
 export type Database = {
   public: {
@@ -59,6 +60,10 @@ export type Database = {
           frequency: string
           indexing: string[]
           status: JournalStatus
+          oai_pmh_endpoint: string
+          submission_url: string
+          sync_status: SyncStatus
+          last_synced_at: string | null
           created_at: string
         }
         Insert: {
@@ -74,6 +79,10 @@ export type Database = {
           frequency?: string
           indexing?: string[]
           status?: JournalStatus
+          oai_pmh_endpoint?: string
+          submission_url?: string
+          sync_status?: SyncStatus
+          last_synced_at?: string | null
           created_at?: string
         }
         Update: Partial<Database['public']['Tables']['journals']['Insert']>
@@ -279,9 +288,11 @@ export type Database = {
           journal_name: string
           issn: string
           website_url: string
+          oai_pmh_endpoint: string
           institution: string
           contact_name: string
           contact_email: string
+          notes: string
           status: RequestStatus
           admin_note: string
           reviewed_at: string | null
@@ -292,9 +303,11 @@ export type Database = {
           journal_name: string
           issn?: string
           website_url: string
+          oai_pmh_endpoint?: string
           institution?: string
           contact_name?: string
           contact_email: string
+          notes?: string
           status?: RequestStatus
           admin_note?: string
           reviewed_at?: string | null
