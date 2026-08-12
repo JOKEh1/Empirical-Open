@@ -1,26 +1,92 @@
 "use client"
 
-import { FormEvent, useState } from "react"
+import { FormEvent, useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, CheckCircle2, Mail } from "lucide-react"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
+import { getCurrentUser, type User } from "@/lib/auth"
+import { createClient } from "@/lib/supabase/client"
 
 const fields = [
   { id: "journalName", label: "Journal Name", type: "text", required: true },
   { id: "issn", label: "eISSN / ISSN", type: "text", placeholder: "e.g., 2040-0743" },
   { id: "website", label: "Journal / OJS Website URL", type: "url", required: true },
+  {
+    id: "oaiPmhEndpoint",
+    label: "OAI-PMH Endpoint URL",
+    type: "url",
+    placeholder: "https://your-journal.org/oai",
+    required: true,
+  },
   { id: "institution", label: "Publishing Institution / University", type: "text" },
   { id: "contact", label: "Contact Person Name & Role", type: "text" },
   { id: "email", label: "Contact Email Address", type: "email", required: true },
 ]
 
 export default function RequestIntegrationPage() {
+  const router = useRouter()
+  const [user, setUser] = useState<User | null>(null)
+  const [checkingAuth, setCheckingAuth] = useState(true)
   const [submitted, setSubmitted] = useState(false)
+  const [pending, setPending] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
+  const [values, setValues] = useState<Record<string, string>>({})
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  // UX guard only; middleware.ts enforces this server-side.
+  useEffect(() => {
+    let cancelled = false
+    getCurrentUser().then((u) => {
+      if (cancelled) return
+      if (!u) {
+        router.push("/login?redirect=/request-integration")
+        return
+      }
+      setUser(u)
+      setValues((v) => ({ ...v, email: v.email || u.email, contact: v.contact || u.name }))
+      setCheckingAuth(false)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [router])
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setFormError(null)
+    if (pending) return
+
+    setPending(true)
+    const { error } = await createClient()
+      .from("integration_requests")
+      .insert({
+        journal_name: values.journalName ?? "",
+        issn: values.issn ?? "",
+        website_url: values.website ?? "",
+        oai_pmh_endpoint: values.oaiPmhEndpoint ?? "",
+        institution: values.institution ?? "",
+        contact_name: values.contact ?? "",
+        contact_email: values.email ?? "",
+        notes: values.notes ?? "",
+      })
+    setPending(false)
+
+    if (error) {
+      setFormError(error.message)
+      return
+    }
     setSubmitted(true)
+  }
+
+  if (checkingAuth) {
+    return (
+      <>
+        <SiteHeader />
+        <main className="min-h-screen bg-[#faf9f6]" />
+        <SiteFooter />
+      </>
+    )
   }
 
   return (
@@ -44,8 +110,13 @@ export default function RequestIntegrationPage() {
               Apply for Journal Integration
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[#475569]">
-              Submit your journal details to join our open-access discovery network and increase your publication&apos;s global visibility.
+              Submit your journal's OJS and OAI-PMH details to join our open-access discovery network and increase your publication&apos;s global visibility.
             </p>
+            {user && (
+              <p className="mt-3 text-sm text-[#64748b]">
+                Signed in as <span className="font-medium text-[#0f172a]">{user.email}</span>
+              </p>
+            )}
           </header>
 
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm md:p-10">
@@ -58,7 +129,10 @@ export default function RequestIntegrationPage() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => setSubmitted(false)}
+                  onClick={() => {
+                    setSubmitted(false)
+                    setValues({ email: user?.email ?? "", contact: user?.name ?? "" })
+                  }}
                   className="mt-6 text-sm font-semibold text-[#b45309] underline underline-offset-4"
                 >
                   Submit another request
@@ -66,6 +140,11 @@ export default function RequestIntegrationPage() {
               </div>
             ) : (
               <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+                {formError && (
+                  <p className="rounded-md border border-rust/40 bg-rust/10 px-3 py-2.5 text-sm text-rust">
+                    {formError}
+                  </p>
+                )}
                 {fields.map((field) => (
                   <div key={field.id} className="flex flex-col gap-2">
                     <label htmlFor={field.id} className="text-sm font-semibold text-[#0f172a]">
@@ -77,8 +156,15 @@ export default function RequestIntegrationPage() {
                       type={field.type}
                       placeholder={field.placeholder}
                       required={field.required}
+                      value={values[field.id] ?? ""}
+                      onChange={(e) => setValues((v) => ({ ...v, [field.id]: e.target.value }))}
                       className="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm text-[#0f172a] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-[#d97706] focus:ring-2 focus:ring-[#d97706]/20"
                     />
+                    {field.id === "oaiPmhEndpoint" && (
+                      <p className="text-xs text-[#64748b]">
+                        The OAI-PMH endpoint we'll harvest article metadata from once approved.
+                      </p>
+                    )}
                   </div>
                 ))}
 
@@ -88,6 +174,8 @@ export default function RequestIntegrationPage() {
                     id="notes"
                     name="notes"
                     rows={5}
+                    value={values.notes ?? ""}
+                    onChange={(e) => setValues((v) => ({ ...v, notes: e.target.value }))}
                     className="resize-y rounded-md border border-slate-300 bg-white px-3 py-3 text-sm text-[#0f172a] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-[#d97706] focus:ring-2 focus:ring-[#d97706]/20"
                     placeholder="Tell us about your journal, archive, and publishing model."
                   />
@@ -97,9 +185,10 @@ export default function RequestIntegrationPage() {
                   <div>
                     <button
                       type="submit"
-                      className="rounded-md bg-[#d97706] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#b45309]"
+                      disabled={pending}
+                      className="rounded-md bg-[#d97706] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#b45309] disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      Submit Request
+                      {pending ? "Submitting…" : "Submit Request"}
                     </button>
                     <p className="mt-3 text-xs text-[#64748b]">Our editorial board reviews requests within 3-5 business days.</p>
                   </div>
