@@ -347,6 +347,23 @@ export type Database = {
         Args: Record<string, never>
         Returns: boolean
       }
+      admin_list_users: {
+        Args: Record<string, never>
+        Returns: {
+          id: string
+          email: string
+          name: string
+          affiliation: string
+          role: UserRole
+          avatar_color: AvatarColor
+          verified: boolean
+          created_at: string
+        }[]
+      }
+      admin_set_user_role: {
+        Args: { target_id: string; new_role: string }
+        Returns: undefined
+      }
     }
     Enums: { [_ in never]: never }
     CompositeTypes: { [_ in never]: never }
