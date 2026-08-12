@@ -17,10 +17,12 @@ export function CommentCard({
   comment,
   currentUserId = null,
   likedCommentIds = [],
+  isAdmin = false,
 }: {
   comment: Comment
   currentUserId?: string | null
   likedCommentIds?: string[]
+  isAdmin?: boolean
 }) {
   const [liked, setLiked] = useState(likedCommentIds.includes(comment.id))
   const [likes, setLikes] = useState(comment.likes)
@@ -45,14 +47,18 @@ export function CommentCard({
   }
 
   function handleDelete() {
-    if (!confirm("Delete this comment? This can't be undone.")) return
+    const confirmMsg = isOwnComment
+      ? "Delete this comment? This can't be undone."
+      : "Delete this comment as an admin? This can't be undone."
+    if (!confirm(confirmMsg)) return
     startTransition(async () => {
       const res = await deleteComment(comment.id, comment.articleId)
       if (!res.error) setDeleted(true)
     })
   }
 
-  const isOwn = !!currentUserId && comment.authorId === currentUserId
+  const isOwnComment = !!currentUserId && comment.authorId === currentUserId
+  const canDelete = isOwnComment || isAdmin
 
   return (
     <div className="border-b border-line py-6 last:border-none">
@@ -107,10 +113,11 @@ export function CommentCard({
               <Reply className="size-4" />
               Reply
             </button>
-            {isOwn && (
+            {canDelete && (
               <button
                 onClick={handleDelete}
                 disabled={isPending}
+                title={isOwnComment ? undefined : "Delete as admin"}
                 className="inline-flex items-center gap-1 text-text-soft hover:text-rust disabled:opacity-60"
               >
                 <Trash2 className="size-4" />
@@ -129,6 +136,7 @@ export function CommentCard({
                   articleId={comment.articleId}
                   currentUserId={currentUserId}
                   likedCommentIds={likedCommentIds}
+                  isAdmin={isAdmin}
                 />
               ))}
             </div>
@@ -172,11 +180,13 @@ function ReplyCard({
   articleId,
   currentUserId,
   likedCommentIds,
+  isAdmin = false,
 }: {
   reply: CommentReply
   articleId: string
   currentUserId: string | null
   likedCommentIds: string[]
+  isAdmin?: boolean
 }) {
   const [liked, setLiked] = useState(likedCommentIds.includes(reply.id))
   const [likes, setLikes] = useState(reply.likes)
@@ -200,14 +210,18 @@ function ReplyCard({
   }
 
   function handleDelete() {
-    if (!confirm("Delete this reply? This can't be undone.")) return
+    const confirmMsg = isOwnReply
+      ? "Delete this reply? This can't be undone."
+      : "Delete this reply as an admin? This can't be undone."
+    if (!confirm(confirmMsg)) return
     startTransition(async () => {
       const res = await deleteComment(reply.id, articleId)
       if (!res.error) setDeleted(true)
     })
   }
 
-  const isOwn = !!currentUserId && reply.authorId === currentUserId
+  const isOwnReply = !!currentUserId && reply.authorId === currentUserId
+  const canDelete = isOwnReply || isAdmin
 
   return (
     <div className="flex gap-3">
@@ -245,10 +259,11 @@ function ReplyCard({
             <Heart className="size-3" fill={liked ? "currentColor" : "none"} />
             {likes}
           </button>
-          {isOwn && (
+          {canDelete && (
             <button
               onClick={handleDelete}
               disabled={isPending}
+              title={isOwnReply ? undefined : "Delete as admin"}
               className="inline-flex items-center gap-1 hover:text-rust disabled:opacity-60"
             >
               <Trash2 className="size-3" />

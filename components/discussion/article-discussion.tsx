@@ -12,9 +12,17 @@ export async function ArticleDiscussion({ articleId }: { articleId: string }) {
     supabase.auth.getUser(),
   ])
   const user = userData.user
-  const likedCommentIds = user
-    ? await getUserLikedCommentIds(supabase, user.id, collectCommentIds(comments))
-    : []
+  const [likedCommentIds, isAdmin] = await Promise.all([
+    user ? getUserLikedCommentIds(supabase, user.id, collectCommentIds(comments)) : Promise.resolve([]),
+    user
+      ? supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .maybeSingle()
+          .then(({ data }) => data?.role === "admin")
+      : Promise.resolve(false),
+  ])
 
   return (
     <section className="border-t border-line">
@@ -80,6 +88,7 @@ export async function ArticleDiscussion({ articleId }: { articleId: string }) {
                     comment={comment}
                     currentUserId={user?.id ?? null}
                     likedCommentIds={likedCommentIds}
+                    isAdmin={isAdmin}
                   />
                 ))}
               </div>
