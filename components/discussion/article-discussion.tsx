@@ -1,13 +1,16 @@
-'use client'
+import Link from "next/link"
+import { MessageCircle, LogIn } from "lucide-react"
+import { CommentCard } from "@/components/discussion/comment-card"
+import { createClient } from "@/lib/supabase/server"
+import { getCommentsByArticleId } from "@/lib/queries/discussions"
 
-import Link from 'next/link'
-import { getCommentsByArticleId } from '@/lib/discussion-data'
-import { CommentCard } from '@/components/discussion/comment-card'
-import { MessageCircle, LogIn } from 'lucide-react'
-
-export function ArticleDiscussion({ articleId }: { articleId: string }) {
-  const comments = getCommentsByArticleId(articleId)
-  const isAuthenticated = false // This would be replaced with actual auth check
+export async function ArticleDiscussion({ articleId }: { articleId: string }) {
+  const supabase = await createClient()
+  const [comments, { data: userData }] = await Promise.all([
+    getCommentsByArticleId(supabase, articleId),
+    supabase.auth.getUser(),
+  ])
+  const isAuthenticated = !!userData.user
 
   return (
     <section className="border-t border-line">
@@ -37,7 +40,7 @@ export function ArticleDiscussion({ articleId }: { articleId: string }) {
             )}
 
             {/* Sign-in prompt for unauthenticated users */}
-            {!isAuthenticated && comments.length > 0 && (
+            {!isAuthenticated && (
               <div className="mt-8 rounded-xs border-2 border-gold/30 bg-gold/5 p-6">
                 <div className="flex items-start gap-4">
                   <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold/20">
@@ -52,7 +55,7 @@ export function ArticleDiscussion({ articleId }: { articleId: string }) {
                     </p>
                     <div className="flex gap-3">
                       <Link
-                        href="/login"
+                        href={`/login?redirect=/article/${articleId}`}
                         className="inline-flex items-center gap-2 rounded-xs bg-gold px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft"
                       >
                         <LogIn className="size-4" />
@@ -99,7 +102,7 @@ export function ArticleDiscussion({ articleId }: { articleId: string }) {
 
               <div className="mt-5 border-t border-line pt-5">
                 <div className="mb-2 text-xs font-semibold text-ink">
-                  {comments.length} {comments.length === 1 ? 'comment' : 'comments'}
+                  {comments.length} {comments.length === 1 ? "comment" : "comments"}
                 </div>
                 <Link
                   href="/discussions"

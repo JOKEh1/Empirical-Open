@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { ArrowRight, BookOpen } from "lucide-react"
-import type { JournalDetail } from "@/lib/journals-data"
+import type { JournalDetail } from "@/lib/queries/types"
 
 interface JournalCardProps {
   journal: JournalDetail

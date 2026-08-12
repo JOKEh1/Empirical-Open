@@ -2,15 +2,17 @@ import Link from "next/link"
 import { Clock, ArrowRight } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { getAllCFPs } from "@/lib/cfp-data"
+import { createClient } from "@/lib/supabase/server"
+import { listOpenCFPs } from "@/lib/queries/cfp"
 
 export const metadata = {
   title: "Open Calls for Papers | EmpiricalOpen",
   description: "View all open calls for papers and special issues across EmpiricalOpen journals",
 }
 
-export default function CallsForPapersPage() {
-  const cfps = getAllCFPs()
+export default async function CallsForPapersPage() {
+  const supabase = await createClient()
+  const cfps = await listOpenCFPs(supabase)
 
   return (
     <div className="min-h-screen bg-paper text-foreground">

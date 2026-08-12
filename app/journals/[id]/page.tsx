@@ -1,30 +1,28 @@
-"use client"
-
 import Link from "next/link"
-import { useParams } from "next/navigation"
+import { notFound } from "next/navigation"
 import { SiteHeader } from "@/components/site-header"
 import { ArticlePreview } from "@/components/journal/article-preview"
-import { getJournalById } from "@/lib/journals-data"
-import { ArrowLeft, BookOpen, Users, Calendar, Globe, Award } from "lucide-react"
+import { createClient } from "@/lib/supabase/server"
+import { getJournalById } from "@/lib/queries/journals"
+import { ArrowLeft, Users, Globe, Award } from "lucide-react"
 
-export default function JournalDetailPage() {
-  const params = useParams()
-  const journal = getJournalById(params.id as string)
+const disciplineColor: Record<string, string> = {
+  "Public Health": "var(--jade)",
+  "Agricultural Sciences": "var(--rust)",
+  Engineering: "var(--gold)",
+  Education: "var(--gold)",
+  "Social Sciences": "var(--jade)",
+  "Clinical Sciences": "var(--rust)",
+  "Environmental Studies": "var(--jade)",
+}
+
+export default async function JournalDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const supabase = await createClient()
+  const journal = await getJournalById(supabase, id)
 
   if (!journal) {
-    return (
-      <>
-        <SiteHeader />
-        <div className="flex h-[60vh] items-center justify-center bg-background">
-          <div className="text-center">
-            <p className="text-paper-raised/70">Journal not found.</p>
-            <Link href="/journals" className="mt-4 inline-block text-gold hover:text-gold-soft">
-              Back to journals
-            </Link>
-          </div>
-        </div>
-      </>
-    )
+    notFound()
   }
 
   return (
@@ -50,22 +48,7 @@ export default function JournalDetailPage() {
             <div className="mb-4 flex items-center gap-4">
               <div
                 className="flex size-16 items-center justify-center rounded-xs font-serif text-2xl font-bold text-paper"
-                style={{
-                  background:
-                    journal.discipline === "Public Health"
-                      ? "var(--jade)"
-                      : journal.discipline === "Agricultural Sciences"
-                        ? "var(--rust)"
-                        : journal.discipline === "Engineering"
-                          ? "var(--gold)"
-                          : journal.discipline === "Education"
-                            ? "var(--gold)"
-                            : journal.discipline === "Social Sciences"
-                              ? "var(--jade)"
-                              : journal.discipline === "Clinical Sciences"
-                                ? "var(--rust)"
-                                : "var(--jade)",
-                }}
+                style={{ background: disciplineColor[journal.discipline] ?? "var(--jade)" }}
               >
                 {journal.initials}
               </div>
@@ -94,19 +77,19 @@ export default function JournalDetailPage() {
               <div>
                 <p className="text-xs font-medium text-paper-raised/60">Founded</p>
                 <p className="mt-1 font-serif text-xl font-semibold text-gold">
-                  {journal.foundedYear}
+                  {journal.foundedYear ?? "—"}
                 </p>
               </div>
               <div>
                 <p className="text-xs font-medium text-paper-raised/60">Frequency</p>
                 <p className="mt-1 font-serif text-xl font-semibold text-gold">
-                  {journal.frequency}
+                  {journal.frequency || "—"}
                 </p>
               </div>
               <div>
                 <p className="text-xs font-medium text-paper-raised/60">Editor in Chief</p>
                 <p className="mt-1 font-mono text-xs font-medium text-gold truncate">
-                  {journal.editorInChief.split(" ").slice(1).join(" ")}
+                  {journal.editorInChief.split(" ").slice(1).join(" ") || journal.editorInChief}
                 </p>
               </div>
             </div>
@@ -126,6 +109,9 @@ export default function JournalDetailPage() {
                 {journal.articles.map((article) => (
                   <ArticlePreview key={article.id} article={article} showJournal={false} />
                 ))}
+                {journal.articles.length === 0 && (
+                  <p className="text-sm text-paper-raised/70">No articles published yet.</p>
+                )}
               </div>
             </div>
 
@@ -138,7 +124,7 @@ export default function JournalDetailPage() {
                   Institution
                 </p>
                 <p className="font-serif text-sm font-semibold text-ink">
-                  {journal.institution}
+                  {journal.institution || "—"}
                 </p>
               </div>
 
@@ -154,6 +140,9 @@ export default function JournalDetailPage() {
                       {member}
                     </li>
                   ))}
+                  {journal.editorialBoard.length === 0 && (
+                    <li className="text-xs text-ink-soft">Not listed</li>
+                  )}
                 </ul>
               </div>
 
@@ -169,13 +158,19 @@ export default function JournalDetailPage() {
                       {index}
                     </li>
                   ))}
+                  {journal.indexing.length === 0 && (
+                    <li className="text-xs text-ink-soft">Not yet indexed</li>
+                  )}
                 </ul>
               </div>
 
               {/* CTA */}
-              <button className="w-full rounded-xs bg-gold px-4 py-3 font-semibold text-ink transition-colors hover:bg-gold-soft">
+              <Link
+                href="/calls-for-papers"
+                className="block w-full rounded-xs bg-gold px-4 py-3 text-center font-semibold text-ink transition-colors hover:bg-gold-soft"
+              >
                 Submit your work
-              </button>
+              </Link>
             </div>
           </div>
         </div>

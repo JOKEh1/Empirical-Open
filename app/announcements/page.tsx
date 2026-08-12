@@ -1,6 +1,8 @@
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { announcements } from "@/lib/hub-data"
+import { createClient } from "@/lib/supabase/server"
+import { listAnnouncements } from "@/lib/queries/announcements"
+import { formatDateLong } from "@/lib/queries/format"
 import { Calendar, Building2 } from "lucide-react"
 
 export const metadata = {
@@ -8,22 +10,9 @@ export const metadata = {
   description: "Latest announcements and updates from across the EmpiricalOpen journal network",
 }
 
-export default function AnnouncementsPage() {
-  // Sort announcements by date (newest first)
-  const sortedAnnouncements = [...announcements].sort((a, b) => {
-    const dateA = new Date(a.date.split(" ").reverse().join("-")).getTime()
-    const dateB = new Date(b.date.split(" ").reverse().join("-")).getTime()
-    return dateB - dateA
-  })
-
-  // Format date for display
-  const formatDate = (dateStr: string) => {
-    const parts = dateStr.split(" ")
-    const day = parts[0]
-    const month = parts[1]
-    const year = parts[2]
-    return `${month} ${day}, ${year}`
-  }
+export default async function AnnouncementsPage() {
+  const supabase = await createClient()
+  const announcements = await listAnnouncements(supabase)
 
   return (
     <div className="min-h-screen bg-paper text-foreground">
@@ -51,12 +40,12 @@ export default function AnnouncementsPage() {
           <div className="mx-auto max-w-[900px] px-6 md:px-8">
             {/* Timeline */}
             <div className="space-y-0">
-              {sortedAnnouncements.map((announcement, idx) => {
-                const isLast = idx === sortedAnnouncements.length - 1
+              {announcements.map((announcement, idx) => {
+                const isLast = idx === announcements.length - 1
 
                 return (
                   <article
-                    key={`${announcement.date}-${announcement.title}`}
+                    key={announcement.id}
                     className={`grid gap-4 md:grid-cols-[140px_1fr_auto] md:items-start py-8 px-0 md:gap-8 ${
                       !isLast ? "border-b border-line" : ""
                     }`}
@@ -65,7 +54,7 @@ export default function AnnouncementsPage() {
                     <div className="flex items-center gap-2 md:flex-col md:items-start md:gap-2">
                       <Calendar className="size-4 text-gold flex-shrink-0 md:hidden" />
                       <time className="font-mono text-sm text-text-soft md:text-xs">
-                        {formatDate(announcement.date)}
+                        {formatDateLong(announcement.publishedAt)}
                       </time>
                     </div>
 
@@ -93,7 +82,7 @@ export default function AnnouncementsPage() {
             </div>
 
             {/* Empty state */}
-            {sortedAnnouncements.length === 0 && (
+            {announcements.length === 0 && (
               <div className="rounded-xs border border-line bg-paper-raised p-12 text-center">
                 <p className="text-text-soft">No announcements at the moment.</p>
               </div>

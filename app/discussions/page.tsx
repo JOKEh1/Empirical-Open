@@ -1,14 +1,14 @@
-'use client'
+import Link from "next/link"
+import { SiteHeader } from "@/components/site-header"
+import { SectionHeader } from "@/components/section-header"
+import { CommentCard } from "@/components/discussion/comment-card"
+import { createClient } from "@/lib/supabase/server"
+import { getRecentComments } from "@/lib/queries/discussions"
+import { ArrowLeft } from "lucide-react"
 
-import Link from 'next/link'
-import { SiteHeader } from '@/components/site-header'
-import { SectionHeader } from '@/components/section-header'
-import { getAllDiscussionComments } from '@/lib/discussion-data'
-import { CommentCard } from '@/components/discussion/comment-card'
-import { ArrowLeft } from 'lucide-react'
-
-export default function DiscussionsPage() {
-  const comments = getAllDiscussionComments()
+export default async function DiscussionsPage() {
+  const supabase = await createClient()
+  const comments = await getRecentComments(supabase, 100)
 
   return (
     <>

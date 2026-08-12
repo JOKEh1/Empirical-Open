@@ -1,7 +1,7 @@
 'use client'
 
 import { Heart, Flag, Reply } from 'lucide-react'
-import type { Comment, CommentReply } from '@/lib/discussion-data'
+import type { Comment, CommentReply } from '@/lib/queries/types'
 import { useState } from 'react'
 
 const avatarColor: Record<string, string> = {

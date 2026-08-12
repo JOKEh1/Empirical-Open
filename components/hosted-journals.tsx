@@ -2,12 +2,12 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { X, ExternalLink } from "lucide-react"
+import { X, ArrowRight } from "lucide-react"
 import { SectionHeader } from "@/components/section-header"
-import { journals, type Journal } from "@/lib/hub-data"
+import type { JournalDetail } from "@/lib/queries/types"
 
-export function HostedJournals() {
-  const [selected, setSelected] = useState<Journal | null>(null)
+export function HostedJournals({ journals, moreCount }: { journals: JournalDetail[]; moreCount: number }) {
+  const [selected, setSelected] = useState<JournalDetail | null>(null)
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -37,29 +37,34 @@ export function HostedJournals() {
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {journals.map((j) => (
             <button
-              key={j.key}
+              key={j.id}
               onClick={() => setSelected(j)}
               className="group flex flex-col gap-2 rounded-xs border border-line bg-paper-raised p-5 text-left transition-all hover:-translate-y-0.5 hover:border-gold"
             >
               <span className="flex size-9 items-center justify-center rounded-md bg-jade-soft font-serif text-sm font-semibold text-jade">
-                {j.init}
+                {j.initials}
               </span>
               <h3 className="text-[13.5px] font-semibold leading-snug text-ink">{j.name}</h3>
-              <p className="text-[11.5px] text-text-soft">{j.short}</p>
+              <p className="text-[11.5px] text-text-soft">
+                {j.articlesCount.toLocaleString()} articles
+                {j.foundedYear ? ` · Est. ${j.foundedYear}` : ""}
+              </p>
             </button>
           ))}
 
-          <Link href="/journals">
-            <div className="flex flex-col gap-2 rounded-xs border border-line bg-paper-raised/60 p-5 transition-all hover:border-gold hover:bg-paper-raised cursor-pointer">
-              <span className="flex size-9 items-center justify-center rounded-md bg-jade-soft font-serif text-sm font-semibold text-jade">
-                +43
-              </span>
-              <h3 className="text-[13.5px] font-semibold leading-snug text-text-soft">
-                More journals
-              </h3>
-              <p className="text-[11.5px] text-text-soft">Browse the full directory</p>
-            </div>
-          </Link>
+          {moreCount > 0 && (
+            <Link href="/journals">
+              <div className="flex flex-col gap-2 rounded-xs border border-line bg-paper-raised/60 p-5 transition-all hover:border-gold hover:bg-paper-raised cursor-pointer">
+                <span className="flex size-9 items-center justify-center rounded-md bg-jade-soft font-serif text-sm font-semibold text-jade">
+                  +{moreCount}
+                </span>
+                <h3 className="text-[13.5px] font-semibold leading-snug text-text-soft">
+                  More journals
+                </h3>
+                <p className="text-[11.5px] text-text-soft">Browse the full directory</p>
+              </div>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -85,7 +90,7 @@ export function HostedJournals() {
 
             <div className="mb-1.5 flex items-center gap-3.5">
               <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-jade-soft font-serif text-base font-semibold text-jade">
-                {selected.init}
+                {selected.initials}
               </span>
               <h3
                 id="journal-modal-title"
@@ -95,24 +100,26 @@ export function HostedJournals() {
               </h3>
             </div>
             <p className="mb-5 mt-1 text-[12.5px] text-text-soft">
-              {selected.fullStat}
+              {selected.articlesCount.toLocaleString()} articles
+              {selected.foundedYear ? ` · Est. ${selected.foundedYear}` : ""}
+              {selected.institution ? ` · ${selected.institution}` : ""}
             </p>
 
             <span className="mb-2 block font-mono text-[11px] uppercase tracking-[0.08em] text-jade">
               About this journal
             </span>
             <p className="mb-6 text-[14.5px] leading-relaxed text-ink">
-              {selected.desc}
+              {selected.description}
             </p>
 
             <div className="flex flex-wrap gap-2.5">
-              <a
-                href="#"
+              <Link
+                href={`/journals/${selected.id}`}
                 className="inline-flex items-center gap-1.5 rounded-xs bg-gold px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft"
               >
-                Visit journal site
-                <ExternalLink className="size-4" />
-              </a>
+                View journal
+                <ArrowRight className="size-4" />
+              </Link>
             </div>
           </div>
         </div>
