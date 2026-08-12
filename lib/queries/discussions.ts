@@ -9,6 +9,7 @@ type CommentRow = Database["public"]["Tables"]["comments"]["Row"]
 function mapReply(row: CommentRow): CommentReply {
   return {
     id: row.id,
+    authorId: row.author_id,
     authorName: row.author_name,
     authorAffiliation: row.author_affiliation,
     authorInitials: row.author_initials,
@@ -25,6 +26,7 @@ function mapTopLevel(row: CommentRow, articleTitle: string, replies: CommentRow[
     id: row.id,
     articleId: row.article_id,
     articleTitle,
+    authorId: row.author_id,
     authorName: row.author_name,
     authorAffiliation: row.author_affiliation,
     authorInitials: row.author_initials,
@@ -100,4 +102,25 @@ export async function getRecentComments(supabase: DB, limit = 50): Promise<Comme
   }
 
   return top.map((t) => mapTopLevel(t, t.articles?.title ?? "", repliesByParent.get(t.id) ?? []))
+}
+
+/** All comment/reply ids in a thread — used to look up which ones the
+ * current viewer has liked in a single query. */
+export function collectCommentIds(comments: Comment[]): string[] {
+  return comments.flatMap((c) => [c.id, ...c.replies.map((r) => r.id)])
+}
+
+export async function getUserLikedCommentIds(
+  supabase: DB,
+  userId: string,
+  commentIds: string[],
+): Promise<string[]> {
+  if (commentIds.length === 0) return []
+  const { data, error } = await supabase
+    .from("comment_likes")
+    .select("comment_id")
+    .eq("user_id", userId)
+    .in("comment_id", commentIds)
+  if (error) throw error
+  return (data ?? []).map((r) => r.comment_id)
 }

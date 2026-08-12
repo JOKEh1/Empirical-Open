@@ -1,24 +1,58 @@
-'use client'
+"use client"
 
-import { Heart, Flag, Reply } from 'lucide-react'
-import type { Comment, CommentReply } from '@/lib/queries/types'
-import { useState } from 'react'
+import Link from "next/link"
+import { Heart, Flag, Reply, Trash2 } from "lucide-react"
+import type { Comment, CommentReply } from "@/lib/queries/types"
+import { useState, useTransition } from "react"
+import { CommentComposer } from "@/components/discussion/comment-composer"
+import { deleteComment, setCommentLiked } from "@/lib/actions/comments"
 
 const avatarColor: Record<string, string> = {
-  jade: 'bg-jade',
-  gold: 'bg-gold',
-  rust: 'bg-rust',
+  jade: "bg-jade",
+  gold: "bg-gold",
+  rust: "bg-rust",
 }
 
-export function CommentCard({ comment }: { comment: Comment }) {
-  const [liked, setLiked] = useState(false)
+export function CommentCard({
+  comment,
+  currentUserId = null,
+  likedCommentIds = [],
+}: {
+  comment: Comment
+  currentUserId?: string | null
+  likedCommentIds?: string[]
+}) {
+  const [liked, setLiked] = useState(likedCommentIds.includes(comment.id))
   const [likes, setLikes] = useState(comment.likes)
   const [showReplyForm, setShowReplyForm] = useState(false)
+  const [deleted, setDeleted] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
-  const handleLike = () => {
-    setLiked(!liked)
-    setLikes(liked ? likes - 1 : likes + 1)
+  if (deleted) return null
+
+  function handleLike() {
+    if (!currentUserId) return
+    const next = !liked
+    setLiked(next)
+    setLikes((n) => n + (next ? 1 : -1))
+    startTransition(async () => {
+      const res = await setCommentLiked(comment.id, comment.articleId, next)
+      if (res.error) {
+        setLiked(!next)
+        setLikes((n) => n + (next ? -1 : 1))
+      }
+    })
   }
+
+  function handleDelete() {
+    if (!confirm("Delete this comment? This can't be undone.")) return
+    startTransition(async () => {
+      const res = await deleteComment(comment.id, comment.articleId)
+      if (!res.error) setDeleted(true)
+    })
+  }
+
+  const isOwn = !!currentUserId && comment.authorId === currentUserId
 
   return (
     <div className="border-b border-line py-6 last:border-none">
@@ -53,11 +87,13 @@ export function CommentCard({ comment }: { comment: Comment }) {
             <span>{comment.timestamp}</span>
             <button
               onClick={handleLike}
-              className={`inline-flex items-center gap-1 transition-colors ${
-                liked ? 'text-rust' : 'hover:text-rust'
+              disabled={!currentUserId || isPending}
+              title={currentUserId ? undefined : "Sign in to like comments"}
+              className={`inline-flex items-center gap-1 transition-colors disabled:cursor-not-allowed ${
+                liked ? "text-rust" : "hover:text-rust"
               }`}
             >
-              <Heart className="size-4" fill={liked ? 'currentColor' : 'none'} />
+              <Heart className="size-4" fill={liked ? "currentColor" : "none"} />
               {likes}
             </button>
             <button className="inline-flex items-center gap-1 hover:text-gold">
@@ -65,32 +101,64 @@ export function CommentCard({ comment }: { comment: Comment }) {
               Flag
             </button>
             <button
-              onClick={() => setShowReplyForm(!showReplyForm)}
+              onClick={() => setShowReplyForm((v) => !v)}
               className="inline-flex items-center gap-1 hover:text-gold"
             >
               <Reply className="size-4" />
               Reply
             </button>
+            {isOwn && (
+              <button
+                onClick={handleDelete}
+                disabled={isPending}
+                className="inline-flex items-center gap-1 text-text-soft hover:text-rust disabled:opacity-60"
+              >
+                <Trash2 className="size-4" />
+                Delete
+              </button>
+            )}
           </div>
 
           {/* Replies */}
           {comment.replies.length > 0 && (
             <div className="mt-4 space-y-4 border-l-2 border-line pl-4">
               {comment.replies.map((reply) => (
-                <ReplyCard key={reply.id} reply={reply} />
+                <ReplyCard
+                  key={reply.id}
+                  reply={reply}
+                  articleId={comment.articleId}
+                  currentUserId={currentUserId}
+                  likedCommentIds={likedCommentIds}
+                />
               ))}
             </div>
           )}
 
-          {/* Reply form placeholder */}
+          {/* Reply form */}
           {showReplyForm && (
             <div className="mt-4 rounded-xs border border-line bg-paper-raised p-3">
-              <p className="text-sm text-text-soft">
-                Sign in with your institutional email to reply to this comment.
-              </p>
-              <button className="mt-2 text-sm font-medium text-gold hover:text-gold-soft">
-                Sign in to reply
-              </button>
+              {currentUserId ? (
+                <CommentComposer
+                  articleId={comment.articleId}
+                  parentId={comment.id}
+                  placeholder="Write a reply…"
+                  submitLabel="Post reply"
+                  autoFocus
+                  onPosted={() => setShowReplyForm(false)}
+                />
+              ) : (
+                <>
+                  <p className="text-sm text-text-soft">
+                    Sign in with your institutional email to reply to this comment.
+                  </p>
+                  <Link
+                    href={`/login?redirect=/article/${comment.articleId}`}
+                    className="mt-2 inline-block text-sm font-medium text-gold hover:text-gold-soft"
+                  >
+                    Sign in to reply
+                  </Link>
+                </>
+              )}
             </div>
           )}
         </div>
@@ -99,14 +167,47 @@ export function CommentCard({ comment }: { comment: Comment }) {
   )
 }
 
-function ReplyCard({ reply }: { reply: CommentReply }) {
-  const [liked, setLiked] = useState(false)
+function ReplyCard({
+  reply,
+  articleId,
+  currentUserId,
+  likedCommentIds,
+}: {
+  reply: CommentReply
+  articleId: string
+  currentUserId: string | null
+  likedCommentIds: string[]
+}) {
+  const [liked, setLiked] = useState(likedCommentIds.includes(reply.id))
   const [likes, setLikes] = useState(reply.likes)
+  const [deleted, setDeleted] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
-  const handleLike = () => {
-    setLiked(!liked)
-    setLikes(liked ? likes - 1 : likes + 1)
+  if (deleted) return null
+
+  function handleLike() {
+    if (!currentUserId) return
+    const next = !liked
+    setLiked(next)
+    setLikes((n) => n + (next ? 1 : -1))
+    startTransition(async () => {
+      const res = await setCommentLiked(reply.id, articleId, next)
+      if (res.error) {
+        setLiked(!next)
+        setLikes((n) => n + (next ? -1 : 1))
+      }
+    })
   }
+
+  function handleDelete() {
+    if (!confirm("Delete this reply? This can't be undone.")) return
+    startTransition(async () => {
+      const res = await deleteComment(reply.id, articleId)
+      if (!res.error) setDeleted(true)
+    })
+  }
+
+  const isOwn = !!currentUserId && reply.authorId === currentUserId
 
   return (
     <div className="flex gap-3">
@@ -135,13 +236,25 @@ function ReplyCard({ reply }: { reply: CommentReply }) {
           <span>{reply.timestamp}</span>
           <button
             onClick={handleLike}
-            className={`inline-flex items-center gap-1 transition-colors ${
-              liked ? 'text-rust' : 'hover:text-rust'
+            disabled={!currentUserId || isPending}
+            title={currentUserId ? undefined : "Sign in to like comments"}
+            className={`inline-flex items-center gap-1 transition-colors disabled:cursor-not-allowed ${
+              liked ? "text-rust" : "hover:text-rust"
             }`}
           >
-            <Heart className="size-3" fill={liked ? 'currentColor' : 'none'} />
+            <Heart className="size-3" fill={liked ? "currentColor" : "none"} />
             {likes}
           </button>
+          {isOwn && (
+            <button
+              onClick={handleDelete}
+              disabled={isPending}
+              className="inline-flex items-center gap-1 hover:text-rust disabled:opacity-60"
+            >
+              <Trash2 className="size-3" />
+              Delete
+            </button>
+          )}
         </div>
       </div>
     </div>

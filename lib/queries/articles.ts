@@ -4,9 +4,9 @@ import type { JournalArticle } from "./types"
 
 type DB = SupabaseClient<Database>
 type ArticleRow = Database["public"]["Tables"]["articles"]["Row"]
-type ArticleWithJournal = ArticleRow & { journals: { name: string } | null }
+export type ArticleWithJournal = ArticleRow & { journals: { name: string } | null }
 
-function mapArticleRow(row: ArticleWithJournal): JournalArticle {
+export function mapArticleRow(row: ArticleWithJournal): JournalArticle {
   return {
     id: row.id,
     title: row.title,

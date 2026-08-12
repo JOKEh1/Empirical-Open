@@ -94,6 +94,24 @@ export async function updatePassword(newPassword: string): Promise<{ error: stri
   return { error: error ? friendlyError(error.message) : null }
 }
 
+/** Verifies the current password by re-authenticating before changing it,
+ * rather than accepting any "current password" input without checking it. */
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string,
+): Promise<{ error: string | null }> {
+  const client = supabase()
+  const { data } = await client.auth.getUser()
+  const email = data.user?.email
+  if (!email) return { error: "You must be signed in to change your password." }
+
+  const { error: reauthError } = await client.auth.signInWithPassword({ email, password: currentPassword })
+  if (reauthError) return { error: "Current password is incorrect." }
+
+  const { error } = await client.auth.updateUser({ password: newPassword })
+  return { error: error ? friendlyError(error.message) : null }
+}
+
 export async function updateProfileName(
   userId: string,
   name: string,

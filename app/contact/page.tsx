@@ -4,6 +4,7 @@ import { useState } from "react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Mail, Phone, MapPin, Send } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -13,13 +14,31 @@ export default function ContactPage() {
     message: "",
   })
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
+    setSubmitting(true)
+
+    const { error: insertError } = await createClient().from("contact_messages").insert({
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      subject: formData.subject.trim(),
+      message: formData.message.trim(),
+    })
+
+    setSubmitting(false)
+    if (insertError) {
+      setError("Something went wrong sending your message. Please try again.")
+      return
+    }
+
     setSubmitted(true)
     setFormData({ name: "", email: "", subject: "", message: "" })
     setTimeout(() => setSubmitted(false), 5000)
@@ -149,12 +168,19 @@ export default function ContactPage() {
                     </div>
                   )}
 
+                  {error && (
+                    <div className="rounded-xs bg-rust/10 border border-rust/30 px-4 py-3">
+                      <p className="text-sm text-rust font-medium">{error}</p>
+                    </div>
+                  )}
+
                   <button
                     type="submit"
-                    className="flex items-center gap-2 rounded-xs bg-gold px-6 py-3 font-semibold text-ink transition-colors hover:bg-gold-soft w-full justify-center"
+                    disabled={submitting}
+                    className="flex items-center gap-2 rounded-xs bg-gold px-6 py-3 font-semibold text-ink transition-colors hover:bg-gold-soft w-full justify-center disabled:opacity-60"
                   >
                     <Send className="h-4 w-4" />
-                    Send Message
+                    {submitting ? "Sending…" : "Send Message"}
                   </button>
                 </form>
               </div>

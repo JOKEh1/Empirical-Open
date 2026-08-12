@@ -66,6 +66,7 @@ export type CFPDetail = {
 
 export type CommentReply = {
   id: string
+  authorId: string | null
   authorName: string
   authorAffiliation: string
   authorInitials: string
@@ -80,6 +81,7 @@ export type Comment = {
   id: string
   articleId: string
   articleTitle: string
+  authorId: string | null
   authorName: string
   authorAffiliation: string
   authorInitials: string

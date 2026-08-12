@@ -2,33 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Bookmark, Settings, Mail, Lock, LogOut, Heart } from 'lucide-react'
+import { ArrowLeft, Bookmark, Settings, Mail, Lock, LogOut, Heart, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { getCurrentUser, signOut, updatePassword, updateEmail, updateProfileName, type User } from '@/lib/auth'
-
-// Mock saved articles data
-const mockSavedArticles = [
-  {
-    id: 'article-001',
-    title: 'Community health worker networks and maternal mortality reduction in rural Kaduna State: a five-year cohort analysis',
-    authors: 'Dr. Amara Okafor, Prof. Chidi Nnamdi',
-    journal: 'West African Journal of Public Health',
-    date: 'March 15, 2024',
-    discipline: 'Public Health',
-    views: 342,
-    citations: 12,
-  },
-  {
-    id: 'article-002',
-    title: 'Low-cost water purification using moringa seed extract in peri-urban settlements',
-    authors: 'Dr. Kofi Mensah, Dr. Ama Asante',
-    journal: 'Journal of Environmental Engineering',
-    date: 'February 28, 2024',
-    discipline: 'Agricultural Sciences',
-    views: 156,
-    citations: 5,
-  },
-]
+import { getCurrentUser, signOut, changePassword, updateEmail, updateProfileName, type User } from '@/lib/auth'
+import { createClient } from '@/lib/supabase/client'
+import { listSavedArticles, unsaveArticle } from '@/lib/queries/saved'
+import type { JournalArticle } from '@/lib/queries/types'
 
 export default function UserDashboard() {
   const router = useRouter()
@@ -38,11 +17,13 @@ export default function UserDashboard() {
   const [name, setName] = useState('')
   const [profileNotice, setProfileNotice] = useState<string | null>(null)
   const [passwordNotice, setPasswordNotice] = useState<string | null>(null)
+  const [savedArticles, setSavedArticles] = useState<JournalArticle[]>([])
+  const [savedLoading, setSavedLoading] = useState(true)
 
   useEffect(() => {
     // UX guard only; middleware.ts enforces this server-side.
     let cancelled = false
-    getCurrentUser().then((u) => {
+    getCurrentUser().then(async (u) => {
       if (cancelled) return
       if (!u) {
         router.push('/login?redirect=/user/dashboard')
@@ -51,11 +32,31 @@ export default function UserDashboard() {
       setUser(u)
       setEmail(u.email)
       setName(u.name)
+      try {
+        const articles = await listSavedArticles(createClient(), u.id)
+        if (!cancelled) setSavedArticles(articles)
+      } finally {
+        if (!cancelled) setSavedLoading(false)
+      }
     })
     return () => {
       cancelled = true
     }
   }, [router])
+
+  async function handleUnsave(articleId: string) {
+    if (!user) return
+    setSavedArticles((prev) => prev.filter((a) => a.id !== articleId))
+    try {
+      await unsaveArticle(createClient(), user.id, articleId)
+    } catch {
+      // If the delete failed, re-sync from the server instead of leaving
+      // the optimistic removal in place.
+      const articles = await listSavedArticles(createClient(), user.id)
+      setSavedArticles(articles)
+    }
+  }
+
   const [showPasswordForm, setShowPasswordForm] = useState(false)
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -68,7 +69,7 @@ export default function UserDashboard() {
       setPasswordNotice('Passwords must match and be at least 8 characters.')
       return
     }
-    const { error } = await updatePassword(newPassword)
+    const { error } = await changePassword(currentPassword, newPassword)
     if (error) {
       setPasswordNotice(error)
       return
@@ -167,40 +168,55 @@ export default function UserDashboard() {
               <p className="text-text-soft">Articles you've bookmarked for later reading</p>
             </div>
 
-            {mockSavedArticles.length > 0 ? (
+            {savedLoading ? (
+              <div className="rounded-xs border border-white/10 bg-paper-raised/50 p-12 text-center text-text-soft">
+                Loading your saved articles…
+              </div>
+            ) : savedArticles.length > 0 ? (
               <div className="space-y-4">
-                {mockSavedArticles.map((article) => (
-                  <Link
+                {savedArticles.map((article) => (
+                  <div
                     key={article.id}
-                    href={`/article/${article.id}`}
-                    className="block group rounded-xs border border-white/10 bg-paper-raised/50 p-6 transition-all hover:border-gold/50 hover:bg-paper-raised/80"
+                    className="group relative rounded-xs border border-white/10 bg-paper-raised/50 p-6 transition-all hover:border-gold/50 hover:bg-paper-raised/80"
                   >
-                    <div className="flex items-start justify-between gap-4 mb-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start gap-3 mb-2">
-                          <Heart className="size-5 mt-0.5 flex-shrink-0 text-gold" />
-                          <h3 className="font-serif text-lg font-semibold text-paper group-hover:text-gold transition-colors">
-                            {article.title}
-                          </h3>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault()
+                        handleUnsave(article.id)
+                      }}
+                      title="Remove from saved"
+                      className="absolute right-4 top-4 flex size-7 items-center justify-center rounded-full text-text-soft transition-colors hover:bg-rust/10 hover:text-rust"
+                    >
+                      <X className="size-4" />
+                    </button>
+                    <Link href={`/article/${article.id}`} className="block">
+                      <div className="flex items-start justify-between gap-4 mb-3 pr-8">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start gap-3 mb-2">
+                            <Heart className="size-5 mt-0.5 flex-shrink-0 text-gold" fill="currentColor" />
+                            <h3 className="font-serif text-lg font-semibold text-paper group-hover:text-gold transition-colors">
+                              {article.title}
+                            </h3>
+                          </div>
+                          <p className="text-sm text-text-soft mb-2">{article.authors}</p>
                         </div>
-                        <p className="text-sm text-text-soft mb-2">{article.authors}</p>
+                        <div className="rounded-xs bg-white/5 border border-white/10 px-3 py-1 text-xs font-medium text-paper-raised whitespace-nowrap">
+                          {article.discipline}
+                        </div>
                       </div>
-                      <div className="rounded-xs bg-white/5 border border-white/10 px-3 py-1 text-xs font-medium text-paper-raised whitespace-nowrap">
-                        {article.discipline}
-                      </div>
-                    </div>
 
-                    <div className="flex items-center justify-between text-xs text-text-soft">
-                      <div className="flex gap-4">
-                        <span>{article.journal}</span>
-                        <span>{article.date}</span>
+                      <div className="flex items-center justify-between text-xs text-text-soft">
+                        <div className="flex gap-4">
+                          <span>{article.journal}</span>
+                          {article.publicationDate && <span>{article.publicationDate}</span>}
+                        </div>
+                        <div className="flex gap-4">
+                          <span>{article.views} views</span>
+                          <span>{article.citations} citations</span>
+                        </div>
                       </div>
-                      <div className="flex gap-4">
-                        <span>{article.views} views</span>
-                        <span>{article.citations} citations</span>
-                      </div>
-                    </div>
-                  </Link>
+                    </Link>
+                  </div>
                 ))}
               </div>
             ) : (

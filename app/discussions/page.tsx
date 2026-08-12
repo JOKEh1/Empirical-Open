@@ -3,12 +3,19 @@ import { SiteHeader } from "@/components/site-header"
 import { SectionHeader } from "@/components/section-header"
 import { CommentCard } from "@/components/discussion/comment-card"
 import { createClient } from "@/lib/supabase/server"
-import { getRecentComments } from "@/lib/queries/discussions"
+import { getRecentComments, collectCommentIds, getUserLikedCommentIds } from "@/lib/queries/discussions"
 import { ArrowLeft } from "lucide-react"
 
 export default async function DiscussionsPage() {
   const supabase = await createClient()
-  const comments = await getRecentComments(supabase, 100)
+  const [comments, { data: userData }] = await Promise.all([
+    getRecentComments(supabase, 100),
+    supabase.auth.getUser(),
+  ])
+  const user = userData.user
+  const likedCommentIds = user
+    ? await getUserLikedCommentIds(supabase, user.id, collectCommentIds(comments))
+    : []
 
   return (
     <>
@@ -67,7 +74,11 @@ export default async function DiscussionsPage() {
                           </span>
                         </Link>
                       </div>
-                      <CommentCard comment={comment} />
+                      <CommentCard
+                        comment={comment}
+                        currentUserId={user?.id ?? null}
+                        likedCommentIds={likedCommentIds}
+                      />
                     </div>
                   ))}
                 </div>
