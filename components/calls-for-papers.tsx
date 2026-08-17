@@ -1,9 +1,9 @@
 import Link from "next/link"
 import { Clock } from "lucide-react"
 import { SectionHeader } from "@/components/section-header"
-import { callsForPapers } from "@/lib/hub-data"
+import type { CFPDetail } from "@/lib/queries/types"
 
-export function CallsForPapers() {
+export function CallsForPapers({ cfps }: { cfps: CFPDetail[] }) {
   return (
     <section className="border-b border-line">
       <div className="mx-auto max-w-[1180px] px-6 py-14 md:px-8">
@@ -15,9 +15,10 @@ export function CallsForPapers() {
         />
 
         <div className="grid gap-5 md:grid-cols-3">
-          {callsForPapers.map((cfp) => (
-            <article
-              key={cfp.title}
+          {cfps.map((cfp) => (
+            <Link
+              href={`/calls-for-papers/${cfp.id}`}
+              key={cfp.id}
               className="flex flex-col gap-3.5 rounded-xs border border-line bg-paper-raised p-6 transition-colors hover:border-gold"
             >
               <p className="text-xs uppercase tracking-wide text-text-soft">
@@ -38,7 +39,7 @@ export function CallsForPapers() {
                     }`}
                   >
                     <Clock className="size-3.5" />
-                    {cfp.daysLeft}
+                    {cfp.daysLeft} day{cfp.daysLeft !== 1 ? "s" : ""} left
                   </span>
                   <span className="font-mono text-[11.5px] text-text-soft">
                     {cfp.closes}
@@ -53,8 +54,11 @@ export function CallsForPapers() {
                   />
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
+          {cfps.length === 0 && (
+            <p className="text-sm text-text-soft">No open calls for papers right now.</p>
+          )}
         </div>
       </div>
     </section>

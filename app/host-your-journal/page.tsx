@@ -1,31 +1,9 @@
-"use client"
-
-import { useState } from "react"
+import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { CheckCircle, Globe, Users, Zap, TrendingUp, Shield, ArrowRight } from "lucide-react"
 
 export default function HostYourJournalPage() {
-  const [showForm, setShowForm] = useState(false)
-  const [formData, setFormData] = useState({
-    journalName: "",
-    institution: "",
-    email: "",
-    currentPlatform: "",
-  })
-  const [submitted, setSubmitted] = useState(false)
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitted(true)
-    setFormData({ journalName: "", institution: "", email: "", currentPlatform: "" })
-    setTimeout(() => setSubmitted(false), 5000)
-  }
-
   const benefits = [
     {
       icon: Globe,
@@ -80,12 +58,12 @@ export default function HostYourJournalPage() {
                 Give your university's research global visibility. Join the network of African publishers 
                 making peer-reviewed scholarship discoverable and accessible.
               </p>
-              <button
-                onClick={() => setShowForm(!showForm)}
+              <Link
+                href="/request-integration"
                 className="inline-flex items-center gap-2 rounded-xs bg-gold px-6 py-3 font-semibold text-ink transition-colors hover:bg-gold-soft"
               >
                 Request Integration <ArrowRight className="h-4 w-4" />
-              </button>
+              </Link>
             </div>
           </div>
         </section>
@@ -134,86 +112,24 @@ export default function HostYourJournalPage() {
           </div>
         </section>
 
-        {/* Integration form */}
-        {showForm && (
-          <section className="border-b border-line">
-            <div className="mx-auto max-w-[1180px] px-6 py-14 md:px-8 md:py-20">
-              <h2 className="font-serif text-2xl font-bold text-gold mb-8">Request Integration</h2>
-              <form onSubmit={handleSubmit} className="max-w-2xl space-y-6 rounded-xs border border-white/10 bg-paper p-8">
-                <div>
-                  <label className="block text-sm font-medium text-ink mb-2">Journal Name</label>
-                  <input
-                    type="text"
-                    name="journalName"
-                    value={formData.journalName}
-                    onChange={handleChange}
-                    required
-                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:outline-none focus:border-gold transition-colors"
-                    placeholder="e.g., Journal of African Studies"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-ink mb-2">Institution</label>
-                  <input
-                    type="text"
-                    name="institution"
-                    value={formData.institution}
-                    onChange={handleChange}
-                    required
-                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:outline-none focus:border-gold transition-colors"
-                    placeholder="University name"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-ink mb-2">Institutional Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:outline-none focus:border-gold transition-colors"
-                    placeholder="contact@university.edu"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-ink mb-2">Current Publishing Platform</label>
-                  <select
-                    name="currentPlatform"
-                    value={formData.currentPlatform}
-                    onChange={handleChange}
-                    required
-                    className="w-full rounded-xs border border-white/10 bg-background px-4 py-3 text-slate-900 focus:outline-none focus:border-gold transition-colors"
-                  >
-                    <option value="">Select a platform</option>
-                    <option value="ojs">Open Journal Systems (OJS)</option>
-                    <option value="wordpress">WordPress with journal plugin</option>
-                    <option value="custom">Custom platform</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-
-                {submitted && (
-                  <div className="rounded-xs bg-jade/10 border border-jade/30 px-4 py-3">
-                    <p className="text-sm text-jade font-medium">
-                      Thank you! We've received your request. Our team will contact you within 2 business days.
-                    </p>
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  className="w-full rounded-xs bg-gold px-6 py-3 font-semibold text-ink transition-colors hover:bg-gold-soft"
-                >
-                  Submit Request
-                </button>
-              </form>
+        {/* Integration CTA */}
+        <section className="border-b border-line">
+          <div className="mx-auto max-w-[1180px] px-6 py-14 md:px-8 md:py-20">
+            <div className="max-w-2xl rounded-xs border border-white/10 bg-paper p-8 text-center">
+              <h2 className="font-serif text-2xl font-bold text-gold mb-3">Ready to join the network?</h2>
+              <p className="text-sm text-text-soft mb-6">
+                Sign in (or create a free account) to submit your journal's details and OAI-PMH endpoint.
+                Our team reviews every request before it goes live.
+              </p>
+              <Link
+                href="/request-integration"
+                className="inline-flex items-center gap-2 rounded-xs bg-gold px-6 py-3 font-semibold text-ink transition-colors hover:bg-gold-soft"
+              >
+                Request Integration <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
-          </section>
-        )}
+          </div>
+        </section>
 
         {/* FAQ section */}
         <section className="bg-paper-raised">

@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Menu, X, ArrowRight } from "lucide-react"
-import { isAuthenticated } from "@/lib/auth"
+import { useRouter, usePathname } from "next/navigation"
+import { Menu, X, ArrowRight, User as UserIcon, LogOut, ShieldCheck } from "lucide-react"
+import { getCurrentUser, onAuthChange, signOut, type User } from "@/lib/auth"
 
 const navLinks = [
   { label: "Discover", href: "/" },
@@ -16,15 +16,41 @@ const navLinks = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
+  const router = useRouter()
   const pathname = usePathname()
   const menuRef = useRef<HTMLDivElement>(null)
 
-  // Check auth status on mount
+  // Check auth status on mount and stay in sync with sign-in/out
   useEffect(() => {
-    setIsLoggedIn(isAuthenticated())
+    let cancelled = false
+    getCurrentUser().then((u) => {
+      if (!cancelled) setUser(u)
+    })
+    const unsubscribe = onAuthChange((loggedIn) => {
+      if (!loggedIn) {
+        setUser(null)
+      } else {
+        getCurrentUser().then((u) => {
+          if (!cancelled) setUser(u)
+        })
+      }
+    })
+    return () => {
+      cancelled = true
+      unsubscribe()
+    }
   }, [])
-  
+
+  const isLoggedIn = user !== null
+
+  async function handleSignOut() {
+    await signOut()
+    setOpen(false)
+    router.push("/")
+    router.refresh()
+  }
+
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/"
     return pathname.startsWith(href)
@@ -110,18 +136,48 @@ export function SiteHeader() {
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
-            <Link
-              href="/login"
-              className="rounded-xs border border-white/30 px-4 py-2 text-sm font-medium transition-colors hover:border-white/60"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-xs bg-gold px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft"
-            >
-              Register
-            </Link>
+            {isLoggedIn ? (
+              <>
+                {user?.role === "admin" && (
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-1.5 rounded-xs border border-gold/40 px-3 py-2 text-sm font-medium text-gold-soft transition-colors hover:border-gold/70"
+                  >
+                    <ShieldCheck className="size-4" />
+                    Admin
+                  </Link>
+                )}
+                <Link
+                  href="/user/dashboard"
+                  className="flex items-center gap-1.5 rounded-xs border border-white/30 px-4 py-2 text-sm font-medium transition-colors hover:border-white/60"
+                >
+                  <UserIcon className="size-4" />
+                  {user?.name || "Account"}
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="flex items-center gap-1.5 rounded-xs px-3 py-2 text-sm font-medium text-paper-raised/70 transition-colors hover:text-paper-raised"
+                >
+                  <LogOut className="size-4" />
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="rounded-xs border border-white/30 px-4 py-2 text-sm font-medium transition-colors hover:border-white/60"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/register"
+                  className="rounded-xs bg-gold px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft"
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </div>
 
           <button
@@ -164,20 +220,52 @@ export function SiteHeader() {
                 </Link>
               )}
               <div className="mt-4 flex flex-col gap-3">
-                <Link
-                  href="/login"
-                  className="rounded-xs border border-white/30 px-4 py-2.5 text-center text-sm font-medium"
-                  onClick={() => setOpen(false)}
-                >
-                  Sign in
-                </Link>
-                <Link
-                  href="/register"
-                  className="rounded-xs bg-gold px-4 py-2.5 text-center text-sm font-semibold text-ink"
-                  onClick={() => setOpen(false)}
-                >
-                  Register
-                </Link>
+                {isLoggedIn ? (
+                  <>
+                    {user?.role === "admin" && (
+                      <Link
+                        href="/admin"
+                        className="flex items-center justify-center gap-1.5 rounded-xs border border-gold/40 px-4 py-2.5 text-center text-sm font-medium text-gold-soft"
+                        onClick={() => setOpen(false)}
+                      >
+                        <ShieldCheck className="size-4" />
+                        Admin
+                      </Link>
+                    )}
+                    <Link
+                      href="/user/dashboard"
+                      className="flex items-center justify-center gap-1.5 rounded-xs border border-white/30 px-4 py-2.5 text-center text-sm font-medium"
+                      onClick={() => setOpen(false)}
+                    >
+                      <UserIcon className="size-4" />
+                      {user?.name || "Account"}
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center justify-center gap-1.5 rounded-xs px-4 py-2.5 text-center text-sm font-medium text-paper-raised/70"
+                    >
+                      <LogOut className="size-4" />
+                      Sign out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      className="rounded-xs border border-white/30 px-4 py-2.5 text-center text-sm font-medium"
+                      onClick={() => setOpen(false)}
+                    >
+                      Sign in
+                    </Link>
+                    <Link
+                      href="/register"
+                      className="rounded-xs bg-gold px-4 py-2.5 text-center text-sm font-semibold text-ink"
+                      onClick={() => setOpen(false)}
+                    >
+                      Register
+                    </Link>
+                  </>
+                )}
               </div>
             </nav>
           </div>

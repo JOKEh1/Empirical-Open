@@ -1,11 +1,13 @@
 "use client"
 
-import { Suspense, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
-import { searchArticles } from "@/lib/journals-data"
-import { disciplines } from "@/lib/hub-data"
+import { createClient } from "@/lib/supabase/client"
+import { searchArticles } from "@/lib/queries/articles"
+import { DISCIPLINES } from "@/lib/queries/types"
+import type { JournalArticle } from "@/lib/queries/types"
 import {
   ArrowLeft,
   BookOpen,
@@ -20,8 +22,30 @@ function SearchContent() {
   const query = searchParams.get("q") || ""
   const discipline = searchParams.get("discipline") || "All disciplines"
   const [selectedDiscipline, setSelectedDiscipline] = useState(discipline)
+  const [results, setResults] = useState<JournalArticle[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const results = searchArticles(query, selectedDiscipline === "All disciplines" ? undefined : selectedDiscipline)
+  useEffect(() => {
+    setSelectedDiscipline(discipline)
+  }, [discipline])
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    searchArticles(createClient(), query, selectedDiscipline === "All disciplines" ? undefined : selectedDiscipline)
+      .then((articles) => {
+        if (!cancelled) setResults(articles)
+      })
+      .catch(() => {
+        if (!cancelled) setResults([])
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [query, selectedDiscipline])
 
   return (
     <>
@@ -47,8 +71,8 @@ function SearchContent() {
               <SearchIcon className="size-6 text-gold" />
               <h1 className="font-serif text-3xl font-bold text-paper-raised">Search Results</h1>
             </div>
-            
-            {query && (
+
+            {query && !loading && (
               <p className="text-base text-paper-raised/80">
                 Found <span className="font-semibold text-gold">{results.length}</span> result{results.length !== 1 ? "s" : ""} for{" "}
                 <span className="font-semibold text-paper-raised">"{query}"</span>
@@ -66,7 +90,7 @@ function SearchContent() {
           <div className="mx-auto max-w-[1000px] px-6 py-6 md:px-8">
             <h3 className="mb-3 text-sm font-medium text-paper-raised/80">Filter by discipline:</h3>
             <div className="flex flex-wrap gap-2">
-              {disciplines.map((d) => {
+              {DISCIPLINES.map((d) => {
                 const isActive = d === selectedDiscipline
                 return (
                   <button
@@ -88,7 +112,9 @@ function SearchContent() {
 
         {/* Results */}
         <div className="mx-auto max-w-[1000px] px-6 py-12 md:px-8">
-          {results.length === 0 ? (
+          {loading ? (
+            <div className="py-12 text-center text-paper-raised/60">Searching…</div>
+          ) : results.length === 0 ? (
             <div className="rounded-xs border border-white/10 bg-ink p-8 text-center">
               <SearchIcon className="mx-auto size-12 mb-4 text-text-soft opacity-50" />
               <h2 className="text-xl font-semibold text-paper-raised mb-2">No results found</h2>
@@ -137,14 +163,16 @@ function SearchContent() {
                   <p className="mb-4 line-clamp-2 text-sm text-paper-raised/70">{article.abstract}</p>
 
                   <div className="flex flex-wrap items-center gap-4 border-t border-white/10 pt-4 text-xs text-paper-raised/60">
-                    <div className="flex items-center gap-1.5">
-                      <Calendar className="size-3.5" />
-                      {new Date(article.publicationDate).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </div>
+                    {article.publicationDate && (
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="size-3.5" />
+                        {new Date(`${article.publicationDate}T00:00:00`).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </div>
+                    )}
                     <div className="flex items-center gap-1.5">
                       <BookOpen className="size-3.5" />
                       {article.journal}

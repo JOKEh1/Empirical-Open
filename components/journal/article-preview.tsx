@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Eye, MessageCircle, ArrowRight } from "lucide-react"
-import type { JournalArticle } from "@/lib/journals-data"
+import type { JournalArticle } from "@/lib/queries/types"
 
 interface ArticlePreviewProps {
   article: JournalArticle

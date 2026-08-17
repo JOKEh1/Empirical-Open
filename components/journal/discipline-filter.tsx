@@ -1,6 +1,6 @@
 "use client"
 
-import { disciplines } from "@/lib/journals-data"
+import { DISCIPLINES } from "@/lib/queries/types"
 
 interface DisciplineFilterProps {
   selected: string
@@ -10,7 +10,7 @@ interface DisciplineFilterProps {
 export function DisciplineFilter({ selected, onSelect }: DisciplineFilterProps) {
   return (
     <div className="flex flex-wrap gap-2">
-      {disciplines.map((d) => (
+      {DISCIPLINES.map((d) => (
         <button
           key={d}
           onClick={() => onSelect(d)}

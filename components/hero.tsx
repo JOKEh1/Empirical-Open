@@ -3,9 +3,11 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Search } from "lucide-react"
-import { disciplines, heroStats } from "@/lib/hub-data"
+import { DISCIPLINES } from "@/lib/queries/types"
 
-export function Hero() {
+const disciplines = DISCIPLINES
+
+export function Hero({ heroStats }: { heroStats: { num: string; label: string }[] }) {
   const router = useRouter()
   const [active, setActive] = useState("All disciplines")
   const [query, setQuery] = useState("soil microbiome Sahel")

@@ -1,14 +1,29 @@
-'use client'
+import Link from "next/link"
+import { SiteHeader } from "@/components/site-header"
+import { SectionHeader } from "@/components/section-header"
+import { CommentCard } from "@/components/discussion/comment-card"
+import { createClient } from "@/lib/supabase/server"
+import { getRecentComments, collectCommentIds, getUserLikedCommentIds } from "@/lib/queries/discussions"
+import { ArrowLeft } from "lucide-react"
 
-import Link from 'next/link'
-import { SiteHeader } from '@/components/site-header'
-import { SectionHeader } from '@/components/section-header'
-import { getAllDiscussionComments } from '@/lib/discussion-data'
-import { CommentCard } from '@/components/discussion/comment-card'
-import { ArrowLeft } from 'lucide-react'
-
-export default function DiscussionsPage() {
-  const comments = getAllDiscussionComments()
+export default async function DiscussionsPage() {
+  const supabase = await createClient()
+  const [comments, { data: userData }] = await Promise.all([
+    getRecentComments(supabase, 100),
+    supabase.auth.getUser(),
+  ])
+  const user = userData.user
+  const [likedCommentIds, isAdmin] = await Promise.all([
+    user ? getUserLikedCommentIds(supabase, user.id, collectCommentIds(comments)) : Promise.resolve([]),
+    user
+      ? supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .maybeSingle()
+          .then(({ data }) => data?.role === "admin")
+      : Promise.resolve(false),
+  ])
 
   return (
     <>
@@ -67,7 +82,12 @@ export default function DiscussionsPage() {
                           </span>
                         </Link>
                       </div>
-                      <CommentCard comment={comment} />
+                      <CommentCard
+                        comment={comment}
+                        currentUserId={user?.id ?? null}
+                        likedCommentIds={likedCommentIds}
+                        isAdmin={isAdmin}
+                      />
                     </div>
                   ))}
                 </div>

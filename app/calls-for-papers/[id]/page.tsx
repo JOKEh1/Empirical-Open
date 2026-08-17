@@ -2,19 +2,17 @@ import Link from "next/link"
 import { Clock, ArrowLeft, ExternalLink, CheckCircle } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { getCFPById, getAllCFPs } from "@/lib/cfp-data"
+import { createClient } from "@/lib/supabase/server"
+import { getCFPById } from "@/lib/queries/cfp"
 import { notFound } from "next/navigation"
 
-export const generateStaticParams = async () => {
-  const cfps = getAllCFPs()
-  return cfps.map((cfp) => ({
-    id: cfp.id,
-  }))
-}
+// CFPs are admin-managed and change frequently (new calls, deadlines
+// passing), so this route is fully dynamic — no generateStaticParams.
 
 export const generateMetadata = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params
-  const cfp = getCFPById(id)
+  const supabase = await createClient()
+  const cfp = await getCFPById(supabase, id)
   if (!cfp) return { title: "Call not found" }
   return {
     title: `${cfp.title} | ${cfp.journal}`,
@@ -24,13 +22,13 @@ export const generateMetadata = async ({ params }: { params: Promise<{ id: strin
 
 export default async function CFPDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const cfp = getCFPById(id)
+  const supabase = await createClient()
+  const cfp = await getCFPById(supabase, id)
 
   if (!cfp) {
     notFound()
   }
 
-  const deadlineDate = new Date(cfp.closesDate)
   const isUrgent = cfp.daysLeft <= 14
 
   return (

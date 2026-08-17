@@ -1,7 +1,8 @@
 'use client'
 
-import { X, ExternalLink } from 'lucide-react'
-import type { JournalDetail } from '@/lib/journals-data'
+import Link from 'next/link'
+import { X, ArrowRight } from 'lucide-react'
+import type { JournalDetail } from '@/lib/queries/types'
 
 interface JournalDetailModalProps {
   journal: JournalDetail | null
@@ -98,13 +99,13 @@ export function JournalDetailModal({ journal, onClose }: JournalDetailModalProps
         </div>
 
         <div className="flex flex-wrap gap-2.5">
-          <a
-            href="#"
+          <Link
+            href={`/journals/${journal.id}`}
             className="inline-flex items-center gap-1.5 rounded-xs bg-gold px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft"
           >
-            Visit journal site
-            <ExternalLink className="size-4" />
-          </a>
+            View journal page
+            <ArrowRight className="size-4" />
+          </Link>
         </div>
       </div>
     </div>

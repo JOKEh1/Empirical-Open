@@ -1,38 +1,25 @@
-"use client"
-
 import Link from "next/link"
-import { useParams } from "next/navigation"
+import { notFound } from "next/navigation"
 import { SiteHeader } from "@/components/site-header"
-import { getArticleById } from "@/lib/journals-data"
 import { ArticleDiscussion } from "@/components/discussion/article-discussion"
-import {
-  ArrowLeft,
-  Calendar,
-  BookOpen,
-  Share2,
-  Heart,
-  MessageCircle,
-} from "lucide-react"
+import { SaveButton } from "@/components/article/save-button"
+import { createClient } from "@/lib/supabase/server"
+import { getArticleById, incrementArticleViews, getCommentCountForArticle } from "@/lib/queries/articles"
+import { ArrowLeft, Calendar, BookOpen, Share2, MessageCircle } from "lucide-react"
 
-export default function ArticleReaderPage() {
-  const params = useParams()
-  const article = getArticleById(params.id as string)
+export default async function ArticleReaderPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const supabase = await createClient()
+  const article = await getArticleById(supabase, id)
 
   if (!article) {
-    return (
-      <>
-        <SiteHeader />
-        <div className="flex h-[60vh] items-center justify-center bg-background">
-          <div className="text-center">
-            <p className="text-paper-raised/70">Article not found.</p>
-            <Link href="/journals" className="mt-4 inline-block text-gold hover:text-gold-soft">
-              Back to journals
-            </Link>
-          </div>
-        </div>
-      </>
-    )
+    notFound()
   }
+
+  const [, commentCount] = await Promise.all([
+    incrementArticleViews(supabase, id).catch(() => undefined),
+    getCommentCountForArticle(supabase, id).catch(() => 0),
+  ])
 
   return (
     <>
@@ -66,23 +53,22 @@ export default function ArticleReaderPage() {
             <p className="mb-6 text-base text-paper-raised/80">{article.authors}</p>
 
             <div className="flex flex-wrap items-center gap-6 border-t border-white/10 pt-6 text-sm text-paper-raised/70">
-              <div className="flex items-center gap-2">
-                <Calendar className="size-4" />
-                {new Date(article.publicationDate).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </div>
+              {article.publicationDate && (
+                <div className="flex items-center gap-2">
+                  <Calendar className="size-4" />
+                  {new Date(`${article.publicationDate}T00:00:00`).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </div>
+              )}
               <div className="flex items-center gap-2">
                 <BookOpen className="size-4" />
                 {article.journal}
               </div>
               <div className="ml-auto flex items-center gap-4">
-                <button className="inline-flex items-center gap-1 text-paper-raised/60 hover:text-paper-raised transition-colors">
-                  <Heart className="size-4" />
-                  Save
-                </button>
+                <SaveButton articleId={article.id} />
                 <button className="inline-flex items-center gap-1 text-paper-raised/60 hover:text-paper-raised transition-colors">
                   <Share2 className="size-4" />
                   Share
@@ -122,8 +108,6 @@ export default function ArticleReaderPage() {
                   </p>
                 </div>
               </section>
-
-
             </div>
 
             {/* Sidebar */}
@@ -156,27 +140,34 @@ export default function ArticleReaderPage() {
                 >
                   {article.journal}
                 </Link>
-                <p className="mt-3 text-xs text-ink-soft">
-                  Volume · Issue · {new Date(article.publicationDate).getFullYear()}
-                </p>
+                {article.publicationDate && (
+                  <p className="mt-3 text-xs text-ink-soft">
+                    {new Date(`${article.publicationDate}T00:00:00`).getFullYear()}
+                  </p>
+                )}
               </div>
 
               {/* Discussion */}
               <div className="rounded-xs border border-white/10 bg-paper p-5">
                 <h3 className="mb-3 font-serif text-sm font-bold text-ink">
-                  Discussion ({article.citations})
+                  Discussion ({commentCount})
                 </h3>
-                <button className="w-full flex items-center justify-center gap-2 rounded-xs bg-jade px-4 py-2 text-sm font-semibold text-paper transition-colors hover:bg-jade-soft">
+                <a
+                  href="#discussion"
+                  className="w-full flex items-center justify-center gap-2 rounded-xs bg-jade px-4 py-2 text-sm font-semibold text-paper transition-colors hover:bg-jade-soft"
+                >
                   <MessageCircle className="size-4" />
-                  Add comment
-                </button>
+                  Join the discussion
+                </a>
               </div>
             </div>
           </div>
         </div>
 
         {/* Discussion section */}
-        <ArticleDiscussion articleId={params.id as string} />
+        <div id="discussion">
+          <ArticleDiscussion articleId={id} />
+        </div>
       </main>
     </>
   )

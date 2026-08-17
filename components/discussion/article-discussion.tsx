@@ -1,13 +1,28 @@
-'use client'
+import Link from "next/link"
+import { MessageCircle, LogIn } from "lucide-react"
+import { CommentCard } from "@/components/discussion/comment-card"
+import { CommentComposer } from "@/components/discussion/comment-composer"
+import { createClient } from "@/lib/supabase/server"
+import { getCommentsByArticleId, collectCommentIds, getUserLikedCommentIds } from "@/lib/queries/discussions"
 
-import Link from 'next/link'
-import { getCommentsByArticleId } from '@/lib/discussion-data'
-import { CommentCard } from '@/components/discussion/comment-card'
-import { MessageCircle, LogIn } from 'lucide-react'
-
-export function ArticleDiscussion({ articleId }: { articleId: string }) {
-  const comments = getCommentsByArticleId(articleId)
-  const isAuthenticated = false // This would be replaced with actual auth check
+export async function ArticleDiscussion({ articleId }: { articleId: string }) {
+  const supabase = await createClient()
+  const [comments, { data: userData }] = await Promise.all([
+    getCommentsByArticleId(supabase, articleId),
+    supabase.auth.getUser(),
+  ])
+  const user = userData.user
+  const [likedCommentIds, isAdmin] = await Promise.all([
+    user ? getUserLikedCommentIds(supabase, user.id, collectCommentIds(comments)) : Promise.resolve([]),
+    user
+      ? supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .maybeSingle()
+          .then(({ data }) => data?.role === "admin")
+      : Promise.resolve(false),
+  ])
 
   return (
     <section className="border-t border-line">
@@ -22,23 +37,12 @@ export function ArticleDiscussion({ articleId }: { articleId: string }) {
         <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
           {/* Main discussion thread */}
           <div>
-            {comments.length === 0 ? (
-              <div className="rounded-xs border border-line bg-paper-raised p-6 text-center">
-                <MessageCircle className="mx-auto mb-3 size-8 text-text-soft" />
-                <p className="text-sm text-text-soft">No comments on this article yet.</p>
-                <p className="mt-1 text-xs text-text-soft">Be the first to share your thoughts.</p>
+            {user ? (
+              <div className="mb-8">
+                <CommentComposer articleId={articleId} />
               </div>
             ) : (
-              <div className="divide-y divide-line">
-                {comments.map((comment) => (
-                  <CommentCard key={comment.id} comment={comment} />
-                ))}
-              </div>
-            )}
-
-            {/* Sign-in prompt for unauthenticated users */}
-            {!isAuthenticated && comments.length > 0 && (
-              <div className="mt-8 rounded-xs border-2 border-gold/30 bg-gold/5 p-6">
+              <div className="mb-8 rounded-xs border-2 border-gold/30 bg-gold/5 p-6">
                 <div className="flex items-start gap-4">
                   <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold/20">
                     <LogIn className="size-5 text-gold" />
@@ -52,7 +56,7 @@ export function ArticleDiscussion({ articleId }: { articleId: string }) {
                     </p>
                     <div className="flex gap-3">
                       <Link
-                        href="/login"
+                        href={`/login?redirect=/article/${articleId}`}
                         className="inline-flex items-center gap-2 rounded-xs bg-gold px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft"
                       >
                         <LogIn className="size-4" />
@@ -67,6 +71,26 @@ export function ArticleDiscussion({ articleId }: { articleId: string }) {
                     </div>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {comments.length === 0 ? (
+              <div className="rounded-xs border border-line bg-paper-raised p-6 text-center">
+                <MessageCircle className="mx-auto mb-3 size-8 text-text-soft" />
+                <p className="text-sm text-text-soft">No comments on this article yet.</p>
+                <p className="mt-1 text-xs text-text-soft">Be the first to share your thoughts.</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-line">
+                {comments.map((comment) => (
+                  <CommentCard
+                    key={comment.id}
+                    comment={comment}
+                    currentUserId={user?.id ?? null}
+                    likedCommentIds={likedCommentIds}
+                    isAdmin={isAdmin}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -99,7 +123,7 @@ export function ArticleDiscussion({ articleId }: { articleId: string }) {
 
               <div className="mt-5 border-t border-line pt-5">
                 <div className="mb-2 text-xs font-semibold text-ink">
-                  {comments.length} {comments.length === 1 ? 'comment' : 'comments'}
+                  {comments.length} {comments.length === 1 ? "comment" : "comments"}
                 </div>
                 <Link
                   href="/discussions"

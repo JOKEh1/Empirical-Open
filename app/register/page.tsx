@@ -1,10 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Building2, Lock, Mail, User, UserPlus } from "lucide-react"
 import { AuthShell } from "@/components/auth/auth-shell"
 import { AuthField } from "@/components/auth/auth-field"
+import { signUp } from "@/lib/auth"
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -26,6 +28,7 @@ const strengthMeta = [
 ]
 
 export default function RegisterPage() {
+  const router = useRouter()
   const [name, setName] = useState("")
   const [affiliation, setAffiliation] = useState("")
   const [email, setEmail] = useState("")
@@ -34,6 +37,9 @@ export default function RegisterPage() {
   const [agree, setAgree] = useState(false)
   const [touched, setTouched] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [pending, setPending] = useState(false)
+  const [needsConfirm, setNeedsConfirm] = useState(false)
+  const [authError, setAuthError] = useState<string | null>(null)
 
   const score = scorePassword(password)
   const meta = strengthMeta[score]
@@ -46,18 +52,39 @@ export default function RegisterPage() {
     touched && confirm.length > 0 && confirm !== password ? "Passwords do not match." : ""
   const agreeError = touched && !agree ? "You must accept the terms to continue." : ""
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setTouched(true)
-    if (
+    setAuthError(null)
+    const valid =
       name.trim().length >= 2 &&
       emailPattern.test(email) &&
       score >= 2 &&
       confirm === password &&
       password.length > 0 &&
       agree
-    ) {
-      setSubmitted(true)
+    if (!valid || pending) return
+
+    setPending(true)
+    const { error, needsEmailConfirm } = await signUp({
+      email,
+      password,
+      name: name.trim(),
+      affiliation: affiliation.trim(),
+    })
+    setPending(false)
+
+    if (error) {
+      setAuthError(error)
+      return
+    }
+    setSubmitted(true)
+    setNeedsConfirm(needsEmailConfirm)
+    if (!needsEmailConfirm) {
+      setTimeout(() => {
+        router.push("/")
+        router.refresh()
+      }, 1200)
     }
   }
 
@@ -78,7 +105,14 @@ export default function RegisterPage() {
       <form className="flex flex-col gap-5" onSubmit={handleSubmit} noValidate>
         {submitted && (
           <p className="rounded-xs border border-jade/40 bg-jade/10 px-3 py-2.5 text-sm text-jade-soft">
-            Account created. Check your inbox to verify your email.
+            {needsConfirm
+              ? "Account created. Check your inbox to verify your email."
+              : "Account created. Signing you in\u2026"}
+          </p>
+        )}
+        {authError && (
+          <p className="rounded-xs border border-rust/40 bg-rust/10 px-3 py-2.5 text-sm text-rust">
+            {authError}
           </p>
         )}
 
@@ -188,10 +222,11 @@ export default function RegisterPage() {
 
         <button
           type="submit"
-          className="mt-1 inline-flex items-center justify-center gap-2 rounded-xs bg-gold px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft"
+          disabled={pending}
+          className="mt-1 inline-flex items-center justify-center gap-2 rounded-xs bg-gold px-6 py-3 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft disabled:cursor-not-allowed disabled:opacity-60"
         >
           <UserPlus className="size-4" />
-          Create account
+          {pending ? "Creating account\u2026" : "Create account"}
         </button>
       </form>
     </AuthShell>
