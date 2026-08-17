@@ -30,7 +30,7 @@ export function Announcements({ announcements }: { announcements: AnnouncementIt
             </article>
           ))}
           {announcements.length === 0 && (
-            <p className="py-5 text-sm text-text-soft">No announcements yet.</p>
+            <p className="py-5 text-sm text-text-soft">No announcement yet.</p>
           )}
         </div>
       </div>
