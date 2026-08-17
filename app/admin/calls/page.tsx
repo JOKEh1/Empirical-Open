@@ -191,7 +191,7 @@ export default function CallsManager() {
   if (!ready) return <AdminLoading />
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-[#faf9f6]">
       <AdminSidebar />
 
       <main className="flex-1 overflow-auto">
@@ -199,7 +199,7 @@ export default function CallsManager() {
           {/* Header */}
           <div className="mb-10 flex items-center justify-between">
             <div>
-              <h1 className="font-serif text-3xl font-semibold text-paper mb-2">
+              <h1 className="font-serif text-3xl font-semibold text-[#0f172a] mb-2">
                 Calls for Papers Manager
               </h1>
               <p className="text-text-soft">
@@ -223,7 +223,7 @@ export default function CallsManager() {
 
           {/* Form */}
           {showForm && (
-            <div className="mb-10 rounded-xs border border-white/10 bg-paper-raised/50 p-8">
+            <div className="mb-10 rounded-xs border border-slate-200 bg-white p-8">
               <div className="mb-6 flex items-center justify-between">
                 <h2 className="font-serif text-xl font-semibold text-paper">
                   {form.id ? 'Edit Special Issue' : 'New Special Issue'}
@@ -242,7 +242,7 @@ export default function CallsManager() {
                       value={form.title}
                       onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                       placeholder="e.g., Climate Change in West Africa"
-                      className="w-full rounded-xs border border-white/10 bg-ink px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
+                      className="w-full rounded-xs border border-slate-200 bg-white px-4 py-2.5 text-slate-900 placeholder:text-slate-500 hover:placeholder:text-slate-600 focus:placeholder:text-slate-600 focus:border-gold focus:outline-none"
                       required
                     />
                   </div>
@@ -298,7 +298,7 @@ export default function CallsManager() {
                           onChange={() => toggleDiscipline(discipline)}
                           className="rounded border-white/20"
                         />
-                        <span className="text-sm text-paper">{discipline}</span>
+                        <span className="text-sm text-[#0f172a]">{discipline}</span>
                       </label>
                     ))}
                   </div>
@@ -365,7 +365,7 @@ export default function CallsManager() {
                   <button
                     type="button"
                     onClick={() => setShowForm(false)}
-                    className="rounded-xs border border-white/10 px-6 py-2.5 font-medium text-paper transition-colors hover:bg-white/5"
+                    className="rounded-xs border border-slate-200 px-6 py-2.5 font-medium text-[#0f172a] transition-colors hover:bg-white/5"
                   >
                     Cancel
                   </button>

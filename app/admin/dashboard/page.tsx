@@ -111,17 +111,17 @@ export default function AdminDashboard() {
     : []
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-[#faf9f6]">
       <AdminSidebar />
 
       <main className="flex-1 overflow-auto">
         <div className="mx-auto max-w-6xl px-8 py-10">
           {/* Header */}
           <div className="mb-10">
-            <h1 className="font-serif text-3xl font-semibold text-paper mb-2">
+            <h1 className="font-serif text-3xl font-semibold text-[#0f172a] mb-2">
               Admin Dashboard
             </h1>
-            <p className="text-text-soft">
+            <p className="text-slate-600">
               Manage journals, calls for papers, and network operations
             </p>
           </div>
@@ -156,13 +156,13 @@ export default function AdminDashboard() {
 
           {/* Quick Actions */}
           <div className="mb-12">
-            <h2 className="font-serif text-xl font-semibold text-paper mb-6">
+            <h2 className="font-serif text-xl font-semibold text-[#0f172a] mb-6">
               Quick Actions
             </h2>
             <div className="grid gap-4 md:grid-cols-2">
               <Link
                 href="/admin/journals"
-                className="group rounded-xs border border-white/10 bg-paper-raised/50 p-6 transition-all hover:border-gold/50 hover:bg-paper-raised"
+                className="group rounded-xs border border-slate-200 bg-white p-6 transition-all hover:border-gold/50 hover:bg-paper-raised"
               >
                 <div className="flex items-start justify-between">
                   <div>
@@ -173,24 +173,24 @@ export default function AdminDashboard() {
                       Approve or reject integration requests, manage active journals
                     </p>
                   </div>
-                  <BookOpen className="size-5 text-text-soft group-hover:text-gold" />
+                  <BookOpen className="size-5 text-slate-600 group-hover:text-gold" />
                 </div>
               </Link>
 
               <Link
                 href="/admin/calls"
-                className="group rounded-xs border border-white/10 bg-paper-raised/50 p-6 transition-all hover:border-gold/50 hover:bg-paper-raised"
+                className="group rounded-xs border border-slate-200 bg-white p-6 transition-all hover:border-gold/50 hover:bg-paper-raised"
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-semibold text-paper group-hover:text-gold">
+                    <h3 className="font-semibold text-[#0f172a] group-hover:text-gold">
                       Create Special Issue
                     </h3>
-                    <p className="mt-2 text-sm text-text-soft">
+                    <p className="mt-2 text-sm text-slate-600">
                       Manage calls for papers and set submission deadlines
                     </p>
                   </div>
-                  <FileText className="size-5 text-text-soft group-hover:text-gold" />
+                  <FileText className="size-5 text-slate-600 group-hover:text-gold" />
                 </div>
               </Link>
             </div>

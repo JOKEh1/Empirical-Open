@@ -186,7 +186,7 @@ export default function JournalRegistry() {
   if (!ready) return <AdminLoading />
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-[#faf9f6]">
       <AdminSidebar />
 
       <main className="flex-1 overflow-auto">
