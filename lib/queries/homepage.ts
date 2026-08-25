@@ -11,18 +11,32 @@ type DB = SupabaseClient<Database>
 /** One aggregated fetch for the homepage — every widget's data in parallel,
  * computed from real tables instead of the old hub-data.ts mock constants. */
 export async function getHomepageData(supabase: DB) {
-  const [journals, trending, editorsPick, cfps, announcements, comments, articlesCountRes] = await Promise.all([
-    listActiveJournals(supabase),
-    getTrendingArticles(supabase, 4),
-    getEditorsPickArticle(supabase),
-    listOpenCFPs(supabase),
-    listAnnouncements(supabase, 4),
-    getRecentComments(supabase, 3),
-    supabase.from("articles").select("*", { count: "exact", head: true }),
-  ])
+  let journals: Awaited<ReturnType<typeof listActiveJournals>> = []
+  let trending: Awaited<ReturnType<typeof getTrendingArticles>> = []
+  let editorsPick: Awaited<ReturnType<typeof getEditorsPickArticle>> = null
+  let cfps: Awaited<ReturnType<typeof listOpenCFPs>> = []
+  let announcements: Awaited<ReturnType<typeof listAnnouncements>> = []
+  let comments: Awaited<ReturnType<typeof getRecentComments>> = []
+  let articlesCount = 0
+
+  try {
+    const result = await Promise.all([
+      listActiveJournals(supabase),
+      getTrendingArticles(supabase, 4),
+      getEditorsPickArticle(supabase),
+      listOpenCFPs(supabase),
+      listAnnouncements(supabase, 4),
+      getRecentComments(supabase, 3),
+      supabase.from("articles").select("*", { count: "exact", head: true }),
+    ])
+    ;[journals, trending, editorsPick, cfps, announcements, comments] = result
+    articlesCount = result[6].count ?? 0
+  } catch {
+    // Supabase is optional in preview; render the shell with empty data when unavailable.
+  }
 
   const totalJournals = journals.length
-  const totalArticles = articlesCountRes.count ?? 0
+  const totalArticles = articlesCount
   const institutions = new Set(journals.map((j) => j.institution).filter(Boolean))
 
   const heroStats = [
