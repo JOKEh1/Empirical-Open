@@ -10,7 +10,7 @@ const disciplines = DISCIPLINES
 export function Hero({ heroStats }: { heroStats: { num: string; label: string }[] }) {
   const router = useRouter()
   const [active, setActive] = useState("All disciplines")
-  const [query, setQuery] = useState("soil microbiome Sahel")
+  const [query, setQuery] = useState("")
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -78,8 +78,8 @@ export function Hero({ heroStats }: { heroStats: { num: string; label: string }[
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search articles, authors, journals, or keywords…"
-              className="w-full bg-transparent py-3 text-[15px] text-[#0f172a] outline-none placeholder:text-[#475569] hover:placeholder:text-[#1e293b] focus:placeholder:text-[#1e293b]"
+              placeholder="Search articles, topics, authors, or DOIs..."
+              className="w-full bg-transparent py-3 text-[15px] text-[#0f172a] outline-none placeholder:text-slate-400"
               aria-label="Search"
             />
           </div>
