@@ -35,6 +35,7 @@ export type JournalDetail = {
   initials: string
   discipline: string
   foundedYear: number | null
+  issn: string | null
   institution: string
   articlesCount: number
   description: string

@@ -66,6 +66,7 @@ export async function getJournalById(supabase: DB, id: string): Promise<JournalD
     initials: j.initials,
     discipline: j.discipline,
     foundedYear: j.founded_year,
+    issn: j.issn,
     institution: j.institution,
     articlesCount: articles?.length ?? 0,
     description: j.description,

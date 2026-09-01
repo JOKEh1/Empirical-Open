@@ -75,9 +75,9 @@ export default async function JournalDetailPage({ params }: { params: Promise<{ 
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium text-paper-raised/60">Founded</p>
+                <p className="text-xs font-medium text-paper-raised/60">ISSN</p>
                 <p className="mt-1 font-serif text-xl font-semibold text-gold">
-                  {journal.foundedYear ?? "—"}
+                  {journal.issn ?? "—"}
                 </p>
               </div>
               <div>
