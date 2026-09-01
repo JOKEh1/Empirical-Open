@@ -7,7 +7,7 @@ import { DISCIPLINES } from "@/lib/queries/types"
 
 const disciplines = DISCIPLINES
 
-export function Hero({ heroStats }: { heroStats: { num: string; label: string }[] }) {
+export function Hero({ heroStats: _heroStats }: { heroStats: { num: string; label: string }[] }) {
   const router = useRouter()
   const [active, setActive] = useState("All disciplines")
   const [query, setQuery] = useState("")
@@ -110,19 +110,6 @@ export function Hero({ heroStats }: { heroStats: { num: string; label: string }[
             )
           })}
         </div>
-
-        {/* Stats */}
-        <dl className="mt-11 grid grid-cols-2 gap-8 sm:flex sm:gap-12">
-          {heroStats.map((s) => (
-            <div key={s.label}>
-              <dt className="sr-only">{s.label}</dt>
-              <dd className="font-serif text-[26px] font-semibold text-[#e9c98a]">
-                {s.num}
-              </dd>
-              <p className="mt-0.5 text-xs text-[#a89f8f]">{s.label}</p>
-            </div>
-          ))}
-        </dl>
       </div>
     </section>
   )
