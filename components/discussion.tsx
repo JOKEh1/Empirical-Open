@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Quote } from "lucide-react"
 import { SectionHeader } from "@/components/section-header"
+import { DiscussionCta } from "@/components/discussion-cta"
 import type { Comment } from "@/lib/queries/types"
 
 const avatarColor: Record<string, string> = {
@@ -58,9 +59,7 @@ export function Discussion({ comments }: { comments: Comment[] }) {
               journal&apos;s editors moderate discussion on their own articles, and
               every comment can be flagged for review.
             </p>
-            <Link href="/login" className="block w-full rounded-xs bg-gold px-4 py-2.5 text-center text-sm font-semibold text-ink transition-colors hover:bg-gold-soft">
-              Sign in to comment
-            </Link>
+            <DiscussionCta />
           </aside>
         </div>
       </div>
