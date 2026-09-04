@@ -121,7 +121,7 @@ export default async function ArticleReaderPage({ params }: { params: Promise<{ 
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 rounded-xs bg-gold px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft"
                     >
-                      Read full article on journal site
+                      Read full article
                       <ExternalLink className="size-4" />
                     </a>
                   ) : (
