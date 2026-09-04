@@ -99,6 +99,7 @@ export type Database = {
           discipline: string
           views: number
           citations: number
+          source_url: string | null
           created_at: string
         }
         Insert: {
@@ -111,6 +112,7 @@ export type Database = {
           discipline: string
           views?: number
           citations?: number
+          source_url?: string | null
           created_at?: string
         }
         Update: Partial<Database['public']['Tables']['articles']['Insert']>

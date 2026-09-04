@@ -27,6 +27,7 @@ export type JournalArticle = {
   discipline: string
   views: number
   citations: number
+  sourceUrl: string | null
 }
 
 export type JournalDetail = {

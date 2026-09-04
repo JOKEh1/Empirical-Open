@@ -18,6 +18,7 @@ export function mapArticleRow(row: ArticleWithJournal): JournalArticle {
     discipline: row.discipline,
     views: row.views,
     citations: row.citations,
+    sourceUrl: row.source_url,
   }
 }
 
