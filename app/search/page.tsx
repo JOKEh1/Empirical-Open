@@ -50,7 +50,7 @@ function SearchContent() {
   return (
     <>
       <SiteHeader />
-      <main className="bg-background">
+      <main className="bg-ink">
         {/* Back and header */}
         <div className="border-b border-white/10 bg-ink">
           <div className="mx-auto max-w-[1000px] px-6 py-4 md:px-8">
@@ -86,7 +86,7 @@ function SearchContent() {
         </div>
 
         {/* Filters */}
-        <div className="border-b border-white/10 bg-background">
+        <div className="border-b border-white/10 bg-ink">
           <div className="mx-auto max-w-[1000px] px-6 py-6 md:px-8">
             <h3 className="mb-3 text-sm font-medium text-paper-raised/80">Filter by discipline:</h3>
             <div className="flex flex-wrap gap-2">
@@ -198,7 +198,7 @@ function SearchContent() {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<div className="h-screen bg-background" />}>
+    <Suspense fallback={<div className="h-screen bg-ink" />}>
       <SearchContent />
     </Suspense>
   )

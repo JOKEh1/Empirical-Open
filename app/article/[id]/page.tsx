@@ -5,7 +5,17 @@ import { ArticleDiscussion } from "@/components/discussion/article-discussion"
 import { SaveButton } from "@/components/article/save-button"
 import { createClient } from "@/lib/supabase/server"
 import { getArticleById, incrementArticleViews, getCommentCountForArticle } from "@/lib/queries/articles"
-import { ArrowLeft, Calendar, BookOpen, Share2, MessageCircle } from "lucide-react"
+import { ArrowLeft, Calendar, BookOpen, Share2, MessageCircle, ExternalLink } from "lucide-react"
+
+function getValidHttpUrl(value: string | null): string | null {
+  if (!value) return null
+  try {
+    const url = new URL(value)
+    return url.protocol === "http:" || url.protocol === "https:" ? url.toString() : null
+  } catch {
+    return null
+  }
+}
 
 export default async function ArticleReaderPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -20,6 +30,8 @@ export default async function ArticleReaderPage({ params }: { params: Promise<{ 
     incrementArticleViews(supabase, id).catch(() => undefined),
     getCommentCountForArticle(supabase, id).catch(() => 0),
   ])
+
+  const fullTextUrl = getValidHttpUrl(article.sourceUrl)
 
   return (
     <>
@@ -91,21 +103,36 @@ export default async function ArticleReaderPage({ params }: { params: Promise<{ 
                 <p className="leading-relaxed text-[#0f172a]">{article.abstract}</p>
               </section>
 
-              {/* Article content placeholder */}
+              {/* Full-text access */}
               <section className="rounded-xs border border-white/10 bg-paper p-8">
                 <div className="space-y-4 text-ink">
                   <p>
-                    This is a preview of the article content. Full PDF and HTML versions are available
-                    for download below.
+                    EmpiricalOpen indexes this article&apos;s metadata and abstract to make it
+                    discoverable. The full text is hosted by the originating journal.
                   </p>
                   <p>
-                    The complete research article, including methodology, results, discussion, and
-                    references, contains the full analysis and findings from this study.
+                    Follow the link below to read the complete research article — including
+                    methodology, results, discussion, and references — on the journal&apos;s own site.
                   </p>
-                  <p>
-                    Readers can access the full text through institutional subscriptions or open
-                    access repositories as indicated below.
-                  </p>
+                  {fullTextUrl ? (
+                    <a
+                      href={fullTextUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xs bg-gold px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-gold-soft"
+                    >
+                      Read full article
+                      <ExternalLink className="size-4" />
+                    </a>
+                  ) : (
+                    <span
+                      aria-disabled="true"
+                      className="inline-flex cursor-not-allowed items-center gap-2 rounded-xs bg-ink/10 px-5 py-2.5 text-sm font-semibold text-ink-soft"
+                    >
+                      Full-text link unavailable
+                      <ExternalLink className="size-4" />
+                    </span>
+                  )}
                 </div>
               </section>
             </div>

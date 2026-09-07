@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
-import { Menu, X, ArrowRight, User as UserIcon, LogOut, ShieldCheck } from "lucide-react"
+import { Menu, X, LogOut, ShieldCheck, ChevronDown } from "lucide-react"
 import { getCurrentUser, onAuthChange, signOut, type User } from "@/lib/auth"
 
 const navLinks = [
@@ -16,10 +16,12 @@ const navLinks = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
   const [user, setUser] = useState<User | null>(null)
   const router = useRouter()
   const pathname = usePathname()
   const menuRef = useRef<HTMLDivElement>(null)
+  const profileRef = useRef<HTMLDivElement>(null)
 
   // Check auth status on mount and stay in sync with sign-in/out
   useEffect(() => {
@@ -47,6 +49,7 @@ export function SiteHeader() {
   async function handleSignOut() {
     await signOut()
     setOpen(false)
+    setProfileOpen(false)
     router.push("/")
     router.refresh()
   }
@@ -87,6 +90,20 @@ export function SiteHeader() {
     }
   }, [open])
 
+  // Close profile dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setProfileOpen(false)
+      }
+    }
+
+    if (profileOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [profileOpen])
+
   return (
     <div className="sticky top-0 z-40">
       {/* Main header */}
@@ -122,17 +139,8 @@ export function SiteHeader() {
                     <span className="absolute inset-x-0 -bottom-0.5 h-0.5 bg-gold" />
                   )}
                 </Link>
-              )
-            })}
-            {isLoggedIn && (
-              <Link
-                href="/calls-for-papers"
-                className="flex items-center gap-2 rounded-md bg-[#c88d2d] px-4 py-2 font-semibold text-[#0f172a] transition-colors hover:bg-amber-500"
-              >
-                Submit an article
-                <ArrowRight className="size-4" />
-              </Link>
-            )}
+                )
+              })}
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
@@ -147,20 +155,63 @@ export function SiteHeader() {
                     Admin
                   </Link>
                 )}
-                <Link
-                  href="/user/dashboard"
-                  className="flex items-center gap-1.5 rounded-xs border border-white/30 px-4 py-2 text-sm font-medium transition-colors hover:border-white/60"
-                >
-                  <UserIcon className="size-4" />
-                  {user?.name || "Account"}
-                </Link>
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center gap-1.5 rounded-xs px-3 py-2 text-sm font-medium text-paper-raised/70 transition-colors hover:text-paper-raised"
-                >
-                  <LogOut className="size-4" />
-                  Sign out
-                </button>
+                <div className="relative" ref={profileRef}>
+                  <button
+                    onClick={() => setProfileOpen((v) => !v)}
+                    className="flex items-center gap-2 rounded-xs border border-white/30 py-1.5 pl-1.5 pr-3 text-sm font-medium transition-colors hover:border-white/60"
+                    aria-haspopup="menu"
+                    aria-expanded={profileOpen}
+                  >
+                    <span
+                      className="flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-ink"
+                      style={{ background: `var(--${user?.avatarColor ?? "jade"})` }}
+                      aria-hidden="true"
+                    >
+                      {(user?.name || user?.email || "?").charAt(0).toUpperCase()}
+                    </span>
+                    <span className="max-w-[140px] truncate">{user?.name || "Account"}</span>
+                    <ChevronDown
+                      className={`size-4 transition-transform ${profileOpen ? "rotate-180" : ""}`}
+                    />
+                  </button>
+
+                  {profileOpen && (
+                    <div
+                      className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-md border border-white/10 bg-ink shadow-xl"
+                      role="menu"
+                    >
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setProfileOpen(false)}
+                        className="flex flex-col gap-0.5 border-b border-white/10 px-4 py-3 transition-colors hover:bg-white/5"
+                        role="menuitem"
+                      >
+                        <span className="truncate text-sm font-semibold text-paper-raised">
+                          {user?.name || "Account"}
+                        </span>
+                        <span className="truncate text-xs text-paper-raised/60">
+                          {user?.email}
+                        </span>
+                      </Link>
+                      <Link
+                        href="/host-your-journal"
+                        onClick={() => setProfileOpen(false)}
+                        className="flex items-center gap-2 px-4 py-3 text-sm font-medium text-paper-raised/85 transition-colors hover:bg-white/5 hover:text-paper-raised"
+                        role="menuitem"
+                      >
+                        Index a Journal
+                      </Link>
+                      <button
+                        onClick={handleSignOut}
+                        className="flex w-full items-center gap-2 border-t border-white/10 px-4 py-3 text-left text-sm font-medium text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300"
+                        role="menuitem"
+                      >
+                        <LogOut className="size-4" />
+                        Sign Out
+                      </button>
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               <>
@@ -209,16 +260,6 @@ export function SiteHeader() {
                   </Link>
                 )
               })}
-              {isLoggedIn && (
-                <Link
-                  href="/calls-for-papers"
-                  className="flex items-center justify-center gap-2 border-b border-white/10 py-3 font-semibold text-[#0f172a] rounded-md bg-[#c88d2d] hover:bg-amber-500 transition-colors"
-                  onClick={() => setOpen(false)}
-                >
-                  Submit an article
-                  <ArrowRight className="size-4" />
-                </Link>
-              )}
               <div className="mt-4 flex flex-col gap-3">
                 {isLoggedIn ? (
                   <>
@@ -233,19 +274,35 @@ export function SiteHeader() {
                       </Link>
                     )}
                     <Link
-                      href="/user/dashboard"
+                      href="/dashboard"
+                      className="flex items-center gap-2.5 rounded-xs border border-white/30 px-4 py-2.5 text-sm font-medium"
+                      onClick={() => setOpen(false)}
+                    >
+                      <span
+                        className="flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-ink"
+                        style={{ background: `var(--${user?.avatarColor ?? "jade"})` }}
+                        aria-hidden="true"
+                      >
+                        {(user?.name || user?.email || "?").charAt(0).toUpperCase()}
+                      </span>
+                      <span className="flex min-w-0 flex-col">
+                        <span className="truncate">{user?.name || "Account"}</span>
+                        <span className="truncate text-xs text-paper-raised/60">{user?.email}</span>
+                      </span>
+                    </Link>
+                    <Link
+                      href="/host-your-journal"
                       className="flex items-center justify-center gap-1.5 rounded-xs border border-white/30 px-4 py-2.5 text-center text-sm font-medium"
                       onClick={() => setOpen(false)}
                     >
-                      <UserIcon className="size-4" />
-                      {user?.name || "Account"}
+                      Index a Journal
                     </Link>
                     <button
                       onClick={handleSignOut}
-                      className="flex items-center justify-center gap-1.5 rounded-xs px-4 py-2.5 text-center text-sm font-medium text-paper-raised/70"
+                      className="flex items-center justify-center gap-1.5 rounded-xs px-4 py-2.5 text-center text-sm font-medium text-red-400"
                     >
                       <LogOut className="size-4" />
-                      Sign out
+                      Sign Out
                     </button>
                   </>
                 ) : (

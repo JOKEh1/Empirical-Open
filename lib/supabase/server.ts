@@ -3,12 +3,17 @@ import { cookies } from 'next/headers'
 import type { Database } from '@/lib/database.types'
 
 // Server-side Supabase client. Use in Server Components, Server Actions, and Route Handlers.
+const SUPABASE_URL_FALLBACK = 'https://placeholder.supabase.co'
+const SUPABASE_ANON_KEY_FALLBACK = 'preview-anon-key'
+
 export async function createClient() {
   const cookieStore = await cookies()
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || SUPABASE_URL_FALLBACK
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || SUPABASE_ANON_KEY_FALLBACK
 
   return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    anonKey,
     {
       cookies: {
         getAll() {

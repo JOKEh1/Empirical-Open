@@ -7,10 +7,10 @@ import { DISCIPLINES } from "@/lib/queries/types"
 
 const disciplines = DISCIPLINES
 
-export function Hero({ heroStats }: { heroStats: { num: string; label: string }[] }) {
+export function Hero({ heroStats: _heroStats }: { heroStats: { num: string; label: string }[] }) {
   const router = useRouter()
   const [active, setActive] = useState("All disciplines")
-  const [query, setQuery] = useState("soil microbiome Sahel")
+  const [query, setQuery] = useState("")
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -78,8 +78,8 @@ export function Hero({ heroStats }: { heroStats: { num: string; label: string }[
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search articles, authors, journals, or keywords…"
-              className="w-full bg-transparent py-3 text-[15px] text-[#0f172a] outline-none placeholder:text-[#475569] hover:placeholder:text-[#1e293b] focus:placeholder:text-[#1e293b]"
+              placeholder="Search articles, topics, authors, or DOIs..."
+              className="w-full bg-transparent py-3 text-[15px] text-[#0f172a] outline-none placeholder:text-slate-400"
               aria-label="Search"
             />
           </div>
@@ -110,19 +110,6 @@ export function Hero({ heroStats }: { heroStats: { num: string; label: string }[
             )
           })}
         </div>
-
-        {/* Stats */}
-        <dl className="mt-11 grid grid-cols-2 gap-8 sm:flex sm:gap-12">
-          {heroStats.map((s) => (
-            <div key={s.label}>
-              <dt className="sr-only">{s.label}</dt>
-              <dd className="font-serif text-[26px] font-semibold text-[#e9c98a]">
-                {s.num}
-              </dd>
-              <p className="mt-0.5 text-xs text-[#a89f8f]">{s.label}</p>
-            </div>
-          ))}
-        </dl>
       </div>
     </section>
   )
