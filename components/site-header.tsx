@@ -109,17 +109,42 @@ export function SiteHeader() {
       {/* Main header */}
       <header ref={menuRef} className="relative border-b border-white/10 bg-ink text-paper-raised">
         <div className="mx-auto flex h-[76px] max-w-[1180px] items-center justify-between px-6 md:px-8">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span
-              className="size-9 shrink-0 rounded-full"
-              style={{
-                background:
-                  "conic-gradient(from 220deg, var(--gold), var(--jade) 55%, var(--gold))",
-              }}
+          <Link href="/" className="flex items-center gap-3 bg-transparent">
+            <svg
               aria-hidden="true"
-            />
-            <span className="font-serif text-xl font-semibold tracking-tight">
-              Empirical<span className="text-gold-soft">Open</span>
+              viewBox="0 0 72 64"
+              className="h-12 w-14 shrink-0"
+              fill="none"
+            >
+              <text
+                x="2"
+                y="39"
+                fill="white"
+                fontFamily="Georgia, serif"
+                fontSize="42"
+              >
+                E
+              </text>
+              <text
+                x="27"
+                y="39"
+                fill="#D4AF37"
+                fontFamily="Georgia, serif"
+                fontSize="42"
+              >
+                O
+              </text>
+              <path d="M5 43c12-5 22-3 31 6 9-9 19-11 31-6v7c-12-5-22-3-31 7-9-10-19-12-31-7v-7Z" fill="white" />
+              <path d="M36 49c9-9 19-11 31-6v7c-12-5-22-3-31 7V49Z" fill="#D4AF37" />
+              <path d="M7 53c10-3 19-1 27 7m31-7c-10-3-19-1-27 7" stroke="white" strokeWidth="2" />
+            </svg>
+            <span className="flex flex-col">
+              <span className="font-serif text-xl font-bold leading-tight text-white">
+                Empiricalopen
+              </span>
+              <span className="font-serif text-xs italic leading-tight text-amber-400">
+                Opening Minds Through Knowledge
+              </span>
             </span>
           </Link>
 
