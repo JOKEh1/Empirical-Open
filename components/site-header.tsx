@@ -110,17 +110,11 @@ export function SiteHeader() {
       <header ref={menuRef} className="relative border-b border-white/10 bg-ink text-paper-raised">
         <div className="mx-auto flex h-[76px] max-w-[1180px] items-center justify-between px-6 md:px-8">
           <Link href="/" className="flex items-center gap-2.5">
-            <span
-              className="size-9 shrink-0 rounded-full"
-              style={{
-                background:
-                  "conic-gradient(from 220deg, var(--gold), var(--jade) 55%, var(--gold))",
-              }}
-              aria-hidden="true"
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-zxSjIO1IqcJ9fA24WHIxwRxFlHEeO2.jpg"
+              alt="EmpiricalOpen — Opening Minds Through Knowledge"
+              className="h-9 w-auto object-contain"
             />
-            <span className="font-serif text-xl font-semibold tracking-tight">
-              Empirical<span className="text-gold-soft">Open</span>
-            </span>
           </Link>
 
           <nav className="hidden items-center gap-8 text-sm lg:flex">
