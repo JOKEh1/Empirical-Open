@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Search } from "lucide-react"
 import { DISCIPLINES } from "@/lib/queries/types"
 
-const disciplines = DISCIPLINES
+const disciplines = DISCIPLINES.filter((discipline) => discipline !== "Clinical Sciences")
 
 export function Hero({ heroStats: _heroStats }: { heroStats: { num: string; label: string }[] }) {
   const router = useRouter()
