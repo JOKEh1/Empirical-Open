@@ -11,7 +11,7 @@ const navLinks = [
   { label: "Journals", href: "/journals" },
   { label: "Calls for Papers", href: "/calls-for-papers" },
   { label: "Announcements", href: "/announcements" },
-  { label: "Discussions", href: "/discussions" },
+  { label: "Partners", href: "/partners" },
 ]
 
 export function SiteHeader() {
