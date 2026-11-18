@@ -10,7 +10,9 @@ export const DISCIPLINES = [
   "Engineering",
   "Education",
   "Social Sciences",
-  "Clinical Sciences",
+  "Applied Sciences",
+  "Business",
+  "Arts, Media & Culture",
   "Environmental Studies",
 ] as const
 

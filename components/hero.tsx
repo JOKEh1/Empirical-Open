@@ -9,7 +9,7 @@ const disciplines = DISCIPLINES
 
 export function Hero({ heroStats: _heroStats }: { heroStats: { num: string; label: string }[] }) {
   const router = useRouter()
-  const [active, setActive] = useState("All disciplines")
+  const [active, setActive] = useState<string | null>(null)
   const [query, setQuery] = useState("")
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -20,7 +20,7 @@ export function Hero({ heroStats: _heroStats }: { heroStats: { num: string; labe
       params.append("q", query.trim())
     }
     
-    if (active !== "All disciplines") {
+    if (active && active !== "All disciplines") {
       params.append("discipline", active)
     }
     
@@ -98,7 +98,13 @@ export function Hero({ heroStats: _heroStats }: { heroStats: { num: string; labe
             return (
               <button
                 key={d}
-                onClick={() => setActive(d)}
+                onClick={() => {
+                  setActive(d)
+                  const params = new URLSearchParams()
+                  if (query.trim()) params.set("q", query.trim())
+                  if (d !== "All disciplines") params.set("discipline", d)
+                  router.push(`/search${params.size ? `?${params.toString()}` : ""}`)
+                }}
                 className={`rounded-full border px-3.5 py-1.5 text-[12.5px] transition-colors ${
                   on
                     ? "border-[#c98a2c] bg-[#c98a2c] font-medium text-[#14213d]"
