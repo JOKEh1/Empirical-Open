@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Search } from "lucide-react"
 import { DISCIPLINES } from "@/lib/queries/types"
 
-const disciplines = DISCIPLINES.filter((discipline) => discipline !== "Clinical Sciences")
+const disciplines = DISCIPLINES
 
 export function Hero({ heroStats: _heroStats }: { heroStats: { num: string; label: string }[] }) {
   const router = useRouter()
@@ -98,7 +98,16 @@ export function Hero({ heroStats: _heroStats }: { heroStats: { num: string; labe
             return (
               <button
                 key={d}
-                onClick={() => setActive(d)}
+                onClick={() => {
+                  if (["Applied Sciences", "Business", "Arts, Media & Culture"].includes(d)) {
+                    const params = new URLSearchParams()
+                    if (query.trim()) params.set("q", query.trim())
+                    params.set("discipline", d)
+                    router.push(`/search?${params.toString()}`)
+                    return
+                  }
+                  setActive(d)
+                }}
                 className={`rounded-full border px-3.5 py-1.5 text-[12.5px] transition-colors ${
                   on
                     ? "border-[#c98a2c] bg-[#c98a2c] font-medium text-[#14213d]"
